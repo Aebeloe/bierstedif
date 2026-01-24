@@ -2,14 +2,16 @@
 import { dashboard, login, register } from '@/routes';
 import { Head, Link } from '@inertiajs/vue3';
 
-withDefaults(
-    defineProps<{
-        canRegister: boolean;
-    }>(),
-    {
-        canRegister: true,
-    },
-);
+const navItems = [
+    { label: 'Udvalg', href: '#', hasDropdown: true },
+    { label: 'Tilmeldinger', href: '#', hasDropdown: true },
+    { label: 'Om Foreningen', href: '#' },
+    { label: 'Kalender', href: '#' },
+    { label: 'Kontakt', href: '#' },
+    { label: 'Klubdragt', href: '#' },
+    { label: 'Sponsorer', href: '#' },
+    { label: 'Koncert for børn', href: '#' },
+];
 </script>
 
 <template>
@@ -20,13 +22,42 @@ withDefaults(
     <div
         class="flex min-h-screen flex-col items-center bg-[#FDFDFC] p-6 text-[#1b1b18] lg:justify-center lg:p-8 dark:bg-[#0a0a0a]"
     >
-        <header
-            class="mb-6 w-full max-w-[335px] text-sm not-has-[nav]:hidden lg:max-w-4xl"
-        >
-            <nav class="flex items-center justify-end gap-4">
-                <template>
-                </template>
-            </nav>
+        <header class="w-full">
+            <div class="bg-[#1a1a1a] text-white py-2 px-4 flex items-center justify-center">
+                <div class="flex w-full max-w-7xl items-center gap-6 text-sm font-medium">
+                    <div class="flex gap-4 items-center border-r border-gray-600 pr-6">
+                        <a href="#" class="hover:text-gray-300"><i class="fab fa-facebook-f text-lg"></i></a>
+                        <a href="#" class="hover:text-gray-300"><i class="fab fa-instagram text-lg"></i></a>
+                        <a href="#" class="hover:text-gray-300"><i class="fab fa-snapchat-ghost text-lg"></i></a>
+                    </div>
+
+                    <nav class="flex flex-wrap gap-x-6 gap-y-2">
+                        <a v-for="item in navItems"
+                           :key="item.label"
+                           :href="item.href"
+                           class="flex items-center gap-1 hover:underline whitespace-nowrap">
+                            {{ item.label }}
+                            <svg v-if="item.hasDropdown" xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </a>
+                    </nav>
+                </div>
+            </div>
+
+            <div class="relative w-full h-[200px] lg:h-[250px] overflow-hidden flex items-center justify-center bg-gray-200">
+                <img src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?q=80&w=2000"
+                     alt="Football Field"
+                     class="absolute inset-0 w-full h-full object-cover brightness-75" />
+
+                <div class="relative z-10 flex items-center gap-4 bg-black/20 p-4 backdrop-blur-sm rounded-lg border border-white/20">
+                    <img src="/logo-placeholder.png" alt="BIF Logo" class="h-20 w-auto" />
+                    <div class="text-white">
+                        <h2 class="text-4xl font-bold tracking-tighter leading-none">BIERSTED</h2>
+                        <p class="text-xl tracking-[0.2em] font-light">IDRÆTSFORENING</p>
+                    </div>
+                </div>
+            </div>
         </header>
         <div
             class="flex w-full items-center justify-center opacity-100 transition-opacity duration-750 lg:grow starting:opacity-0"
