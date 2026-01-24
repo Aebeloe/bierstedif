@@ -12,6 +12,28 @@ const navItems = [
     { label: 'Sponsorer', href: '#' },
     { label: 'Koncert for børn', href: '#' },
 ];
+
+const props = defineProps<{
+    canRegister: boolean;
+    menuData: Record<string, Array<{ label: string; url: string }>>; // Data from Laravel
+}>();
+
+const openDropdown = ref<string | null>(null);
+
+const toggleDropdown = (label: string) => {
+    openDropdown.value = openDropdown.value === label ? null : label;
+};
+
+// Listen for clicks outside to close dropdowns
+const closeDropdown = (e: MouseEvent) => {
+    if (!(e.target as HTMLElement).closest('.nav-item-container')) {
+        openDropdown.value = null;
+    }
+};
+
+onMounted(() => window.addEventListener('click', closeDropdown));
+onUnmounted(() => window.removeEventListener('click', closeDropdown));
+
 </script>
 
 <template>
@@ -32,15 +54,39 @@ const navItems = [
                     </div>
 
                     <nav class="flex flex-wrap gap-x-6 gap-y-2">
-                        <a v-for="item in navItems"
-                           :key="item.label"
-                           :href="item.href"
-                           class="flex items-center gap-1 hover:underline whitespace-nowrap">
-                            {{ item.label }}
-                            <svg v-if="item.hasDropdown" xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                            </svg>
-                        </a>
+                        <div v-for="item in navItems" :key="item.label" class="nav-item-container relative">
+
+                            <button
+                                @click.stop="item.hasDropdown ? toggleDropdown(item.label) : null"
+                                class="flex items-center gap-1 hover:text-gray-300 transition-colors py-2"
+                            >
+                                <component :is="item.hasDropdown ? 'span' : 'Link'" :href="item.href">
+                                    {{ item.label }}
+                                </component>
+
+                                <svg v-if="item.hasDropdown" xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </button>
+
+                            <div
+                                v-if="item.hasDropdown && openDropdown === item.label"
+                                class="absolute left-0 mt-1 w-48 bg-white rounded-md shadow-xl ring-1 ring-black/5 z-[100] py-2"
+                            >
+                                <Link
+                                    v-for="subItem in props.menuData[item.label]"
+                                    :key="subItem.label"
+                                    :href="subItem.url"
+                                    class="block px-4 py-2 text-sm text-gray-800 hover:bg-gray-100 transition-colors"
+                                >
+                                    {{ subItem.label }}
+                                </Link>
+
+                                <div v-if="!props.menuData[item.label]?.length" class="px-4 py-2 text-xs text-gray-400 italic">
+                                    Ingen undermenuer
+                                </div>
+                            </div>
+                        </div>
                     </nav>
                 </div>
             </div>
