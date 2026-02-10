@@ -1,0 +1,23 @@
+@import 'tailwindcss';
+
+@theme inline {
+    --font-sans: 'Readex Pro', ui-sans-serif, system-ui, sans-serif;
+
+    --color-bif-bg: #EBE8E6;
+    --color-bif-fg: #1D1F25;
+    --color-bif-accent: #C26148;
+    --color-bif-accent-dark: #AC5039;
+    --color-bif-btn: #32373C;
+    --color-bif-btn-hover: #3d4349;
+    --color-bif-header: #1a1a1a;
+    --color-bif-white: #FFFFFF;
+    --color-bif-card: #FFFFFF;
+    --color-bif-muted: #6b7280;
+}
+
+@layer base {
+    body {
+        background-color: var(--color-bif-bg);
+        color: var(--color-bif-fg);
+    }
+}
