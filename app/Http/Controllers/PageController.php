@@ -34,7 +34,30 @@ class PageController extends Controller
 
     public function sponsorer(): Response
     {
-        return Inertia::render('Sponsorer');
+        $dir = public_path('images-sponsorer');
+        $sponsors = [];
+
+        if (is_dir($dir)) {
+            foreach (scandir($dir) as $file) {
+                if (in_array(strtolower(pathinfo($file, PATHINFO_EXTENSION)), ['png', 'jpg', 'jpeg', 'svg', 'webp'])) {
+                    $name = pathinfo($file, PATHINFO_FILENAME);
+                    $url = null;
+
+                    // If filename looks like a URL (contains a dot-separated domain pattern)
+                    if (preg_match('/^(www\.)?[a-z0-9-]+\.[a-z]{2,}/i', $name)) {
+                        $url = 'https://' . $name;
+                    }
+
+                    $sponsors[] = [
+                        'image' => '/images-sponsorer/' . $file,
+                        'name' => $name,
+                        'url' => $url,
+                    ];
+                }
+            }
+        }
+
+        return Inertia::render('Sponsorer', ['sponsors' => $sponsors]);
     }
 
     public function tilmelding(string $page): Response

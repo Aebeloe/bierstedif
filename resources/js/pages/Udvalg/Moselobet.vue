@@ -20,7 +20,10 @@ defineOptions({ layout: MainLayout });
                     omkring Biersted.
                 </p>
                 <p class="mt-4 leading-relaxed text-bif-muted">
-                    Hold øje med vores Facebook-side for information om næste års Moseløb, herunder tilmelding,
+                    Moseløbet afholdes Grundlovsdag d. 5. juni 2026.
+                </p>
+                <p class="mt-4 leading-relaxed text-bif-muted">
+                    Hold øje med vores <a href="https://www.facebook.com/groups/344109562373511?locale=da_DK" target="_blank" rel="noopener" class="text-bif-accent hover:underline">Facebook-side</a> for information om næste års Moseløb, herunder tilmelding,
                     ruter og praktisk information.
                 </p>
             </div>
