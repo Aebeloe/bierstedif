@@ -9,7 +9,7 @@ const quickCards = [
     { title: 'Kalender', description: 'Se kommende begivenheder og aktiviteter', href: '/kalender', icon: Calendar },
     { title: 'Prøvetræning', description: 'Prøv en gratis træning i en af vores afdelinger', href: '/tilmeldinger/proevetraening', icon: Dumbbell },
     { title: 'Om Foreningen', description: 'Læs om Biersted IF og vores historie', href: '/om-foreningen', icon: Info },
-    { title: 'Aktiviteter', description: 'Se alle vores sports- og fritidsaktiviteter', href: '/tilmeldinger/proevetraening', icon: Users },
+    { title: 'Aktiviteter', description: 'Se alle vores sports- og fritidsaktiviteter', href: '/kontakt', icon: Users },
 ];
 </script>
 
@@ -17,22 +17,15 @@ const quickCards = [
     <Head title="Forside" />
 
     <!-- Hero -->
-    <section class="relative flex items-center justify-center bg-bif-header px-4 py-20 text-white md:py-32">
-        <img src="/cover.png" alt="" class="absolute inset-0 h-full w-full object-cover opacity-30" />
-        <div class="absolute inset-0 bg-gradient-to-br from-bif-header/80 via-bif-header/60 to-bif-accent/20"></div>
-        <div class="relative z-10 mx-auto max-w-4xl text-center">
-            <h1 class="text-3xl font-bold md:text-5xl lg:text-6xl">Velkommen til Biersted IF</h1>
-            <p class="mt-4 text-lg text-gray-300 md:text-xl">
-                Din lokale idrætsforening i Biersted med aktiviteter for hele familien
-            </p>
-            <div class="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-                <Link href="/tilmeldinger/proevetraening" class="rounded-lg bg-bif-accent px-6 py-3 font-medium text-white transition hover:bg-bif-accent-dark">
-                    Prøv en gratis træning
-                </Link>
-                <Link href="/om-foreningen" class="rounded-lg border border-white/30 px-6 py-3 font-medium text-white transition hover:bg-white/10">
-                    Læs mere om os
-                </Link>
-            </div>
+    <section class="bg-bif-header">
+        <img src="/cover.png" alt="" class="w-full" />
+        <div class="flex items-center justify-center gap-4 px-4 py-6">
+            <Link href="/tilmeldinger/proevetraening" class="rounded-lg bg-bif-accent px-6 py-3 font-medium text-white transition hover:bg-bif-accent-dark">
+                Prøv en gratis træning
+            </Link>
+            <Link href="/om-foreningen" class="rounded-lg border border-white/30 px-6 py-3 font-medium text-white transition hover:bg-white/10">
+                Læs mere om os
+            </Link>
         </div>
     </section>
 

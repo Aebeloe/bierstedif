@@ -58,6 +58,19 @@ defineOptions({ layout: MainLayout });
                     </div>
                 </div>
             </div>
+
+        </div>
+    </div>
+
+    <div class="hidden px-4 pb-12 md:block md:pb-16">
+        <div class="mx-auto max-w-6xl">
+            <div class="rounded-xl bg-white p-6 shadow-md">
+                <h2 class="mb-4 text-xl font-bold">Bestyrelse & Udvalg</h2>
+                <iframe
+                    src="https://docs.google.com/spreadsheets/u/1/d/e/2PACX-1vRdEcz8fbW46QPjzq1m90FrojEHhqMoLb8YnpVjPt-i5f9Gmk6cJta3OJc-dwz4NEDlcPcwKkGiJkmM/pubhtml?widget=true&headers=false"
+                    class="h-[4000px] w-full rounded-lg border-0"
+                />
+            </div>
         </div>
     </div>
 </template>
