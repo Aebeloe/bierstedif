@@ -21,6 +21,8 @@ Route::prefix('tilmeldinger')->name('tilmeldinger.')->group(function () {
     Route::get('/esport', fn () => app(PageController::class)->tilmelding('Esport'))->name('esport');
     Route::get('/familiemedlemskab', fn () => app(PageController::class)->tilmelding('Familiemedlemskab'))->name('familiemedlemskab');
     Route::get('/ungdomsklub', fn () => app(PageController::class)->tilmelding('Ungdomsklub'))->name('ungdomsklub');
+    Route::get('/floorball', fn () => app(PageController::class)->tilmelding('Floorball'))->name('floorball');
+    Route::get('/dart', fn () => app(PageController::class)->tilmelding('Dart'))->name('dart');
     Route::get('/oevrige-hold', fn () => app(PageController::class)->tilmelding('OevrigeHold'))->name('oevrige-hold');
 });
 

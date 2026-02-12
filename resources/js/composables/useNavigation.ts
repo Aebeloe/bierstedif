@@ -33,6 +33,8 @@ export function useNavigation(): NavItem[] {
                 { label: 'Fodbold', href: '/tilmeldinger/fodbold' },
                 { label: 'Gymnastik', href: '/tilmeldinger/gymnastik' },
                 { label: 'Håndbold', href: '/tilmeldinger/haandbold' },
+                { label: 'Floorball', href: '/tilmeldinger/floorball' },
+                { label: 'Dart', href: '/tilmeldinger/dart' },
                 { label: 'Esport', href: '/tilmeldinger/esport' },
                 { label: 'Familiemedlemskab', href: '/tilmeldinger/familiemedlemskab' },
                 { label: 'Ungdomsklub', href: '/tilmeldinger/ungdomsklub' },

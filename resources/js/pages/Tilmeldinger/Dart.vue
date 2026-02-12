@@ -9,7 +9,6 @@ defineOptions({ layout: MainLayout });
 
 const props = defineProps<{ conventusHtml?: string }>();
 
-const iframeRef = ref<HTMLIFrameElement>();
 const iframeHeight = ref(400);
 
 const srcdoc = computed(() => {
@@ -35,16 +34,15 @@ onBeforeUnmount(() => window.removeEventListener('message', onMessage));
 </script>
 
 <template>
-    <Head title="Badminton" />
-    <PageHero title="Badminton" subtitle="Tilmelding til badminton i Biersted IF" />
+    <Head title="Dart" />
+    <PageHero title="Dart" subtitle="Tilmelding til dart i Biersted IF" />
 
     <div class="px-4 py-12 md:py-16">
         <div class="mx-auto max-w-3xl">
             <div class="rounded-xl bg-white p-6 shadow-md md:p-8">
-                <h2 class="text-xl font-bold">Badminton i Biersted IF</h2>
+                <h2 class="text-xl font-bold">Dart i Biersted IF</h2>
                 <p class="mt-4 leading-relaxed text-bif-muted">
-                    Spil badminton i Bierstedhallen! Vi har hold for både børn, unge og voksne på alle niveauer.
-                    Tilmeld dig som nyt medlem eller log ind som eksisterende medlem.
+                    Spil dart i Biersted IF! Tilmeld dig som nyt medlem eller log ind som eksisterende medlem.
                 </p>
                 <div class="mt-6 flex flex-col gap-3 sm:flex-row">
                     <a href="https://www.conventus.dk/dataudv/www/new_tilmelding.php?foreningsid=2266&gruppe=188565" target="_blank" rel="noopener" class="inline-flex items-center justify-center gap-2 rounded-lg bg-bif-accent px-5 py-2.5 font-medium text-white transition hover:bg-bif-accent-dark">
@@ -58,7 +56,6 @@ onBeforeUnmount(() => window.removeEventListener('message', onMessage));
 
             <iframe
                 v-if="srcdoc"
-                ref="iframeRef"
                 :srcdoc="srcdoc"
                 :style="{ height: iframeHeight + 'px' }"
                 class="mt-8 w-full rounded-xl border-0 bg-white shadow-md"
