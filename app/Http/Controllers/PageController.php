@@ -42,7 +42,20 @@ class PageController extends Controller
 
     public function kalender(): Response
     {
-        return Inertia::render('Kalender');
+        $html = Cache::remember('conventus_kalender', 3600, function () {
+            $response = Http::get('https://www.conventus.dk/dataudv/www/vis_aktivitet.php', [
+                'foreningsid' => 2266,
+                'id' => 547412,
+            ]);
+
+            if (! $response->successful()) {
+                return '';
+            }
+
+            return $response->body();
+        });
+
+        return Inertia::render('Kalender', ['conventusHtml' => $html]);
     }
 
     public function kontakt(): Response

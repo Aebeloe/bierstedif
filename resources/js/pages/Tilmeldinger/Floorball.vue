@@ -35,7 +35,7 @@ onBeforeUnmount(() => window.removeEventListener('message', onMessage));
 
 <template>
     <Head title="Floorball" />
-    <PageHero title="Floorball" subtitle="Tilmelding til floorball i Biersted IF" />
+    <PageHero title="Floorball" subtitle="Tilmelding til floorball i Biersted IF" bg="/floorballheader.jpg" bg-position="center 45%" />
 
     <div class="px-4 py-12 md:py-16">
         <div class="mx-auto max-w-3xl">

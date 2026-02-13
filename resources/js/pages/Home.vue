@@ -6,10 +6,10 @@ import { Calendar, Dumbbell, Info, Users } from 'lucide-vue-next';
 defineOptions({ layout: MainLayout });
 
 const quickCards = [
-    { title: 'Kalender', description: 'Se kommende begivenheder og aktiviteter', href: '/kalender', icon: Calendar },
-    { title: 'Prøvetræning', description: 'Prøv en gratis træning i en af vores afdelinger', href: '/tilmeldinger/proevetraening', icon: Dumbbell },
-    { title: 'Om Foreningen', description: 'Læs om Biersted IF og vores historie', href: '/om-foreningen', icon: Info },
-    { title: 'Aktiviteter', description: 'Se alle vores sports- og fritidsaktiviteter', href: '/kontakt', icon: Users },
+    { title: 'Kalender', description: 'Se kommende begivenheder og aktiviteter', href: '/kalender', icon: Calendar, bg: '/kalender.jpg' },
+    { title: 'Prøvetræning', description: 'Prøv en gratis træning i en af vores afdelinger', href: '/tilmeldinger/proevetraening', icon: Dumbbell, bg: '/prøvetræning.jpg' },
+    { title: 'Om Foreningen', description: 'Læs om Biersted IF og vores historie', href: '/om-foreningen', icon: Info, bg: '/omforeningen.jpg' },
+    { title: 'Aktiviteter', description: 'Se alle vores sports- og fritidsaktiviteter', href: '/kontakt', icon: Users, bg: '/aktiviteter.jpg' },
 ];
 </script>
 
@@ -69,11 +69,15 @@ const quickCards = [
                     v-for="card in quickCards"
                     :key="card.title"
                     :href="card.href"
-                    class="group rounded-xl bg-white p-6 shadow-md transition hover:-translate-y-1 hover:shadow-lg"
+                    class="group relative overflow-hidden rounded-xl p-6 shadow-md transition hover:-translate-y-1 hover:shadow-lg"
                 >
-                    <component :is="card.icon" class="h-8 w-8 text-bif-accent transition group-hover:scale-110" />
-                    <h3 class="mt-4 font-semibold">{{ card.title }}</h3>
-                    <p class="mt-2 text-sm text-bif-muted">{{ card.description }}</p>
+                    <img :src="card.bg" :alt="card.title" class="absolute inset-0 h-full w-full object-cover" />
+                    <div class="absolute inset-0 bg-black/50 transition group-hover:bg-black/40"></div>
+                    <div class="relative">
+                        <component :is="card.icon" class="h-8 w-8 text-white transition group-hover:scale-110" />
+                        <h3 class="mt-4 font-semibold text-white">{{ card.title }}</h3>
+                        <p class="mt-2 text-sm text-white/80">{{ card.description }}</p>
+                    </div>
                 </Link>
             </div>
         </div>
