@@ -60,7 +60,7 @@ onBeforeUnmount(() => window.removeEventListener('message', onMessage));
                 :srcdoc="srcdoc"
                 :style="{ height: iframeHeight + 'px' }"
                 class="mt-8 w-full rounded-xl border-0 bg-white shadow-md"
-                sandbox="allow-scripts allow-popups allow-forms"
+                sandbox="allow-scripts allow-popups allow-forms allow-modals"
             />
         </div>
     </div>

@@ -1,6 +1,8 @@
 #!/bin/bash
 cd /home/mma/bierstedif
 
+npm run build
+
 rm -f /home/mma/bierstedif.zip
 
 # Zip everything except .claude and the dev .env/.env.prod files
