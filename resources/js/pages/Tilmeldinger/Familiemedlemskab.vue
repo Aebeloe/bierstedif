@@ -61,7 +61,8 @@ onBeforeUnmount(() => window.removeEventListener('message', onMessage));
             <iframe
                 v-if="srcdoc"
                 :srcdoc="srcdoc"
-                :style="{ height: iframeHeight + 'px' }"
+                :style="{ height: iframeHeight + 'px', overflow: 'hidden' }"
+                scrolling="no"
                 class="mt-8 w-full rounded-xl border-0 bg-white shadow-md"
                 sandbox="allow-scripts allow-popups allow-forms allow-modals"
             />
