@@ -6,7 +6,7 @@ npm run build
 rm -f /home/mma/bierstedif.zip
 
 # Zip everything except .claude and the dev .env/.env.prod files
-zip -r /home/mma/bierstedif.zip . -x "./.claude/*" "./.env" "./.env.prod" "./.git/*" "./.idea/*" "./public/hot" "./node_modules/*" "./credentials.txt"
+zip -r /home/mma/bierstedif.zip . -x "./.claude/*" "./.env" "./.env.prod" "./.git/*" "./.idea/*" "./public/hot" "./node_modules/*" "./credentials.txt" "./deploy.sh"
 
 # Add .env.prod as .env inside the zip
 zip /home/mma/bierstedif.zip --junk-paths -0 .env.prod
