@@ -21,7 +21,7 @@ export function useNavigation(): NavItem[] {
                 { label: 'TUEN', href: '/udvalg/tuen' },
                 { label: 'Kulturudvalget', href: '/udvalg/kulturudvalget' },
                 { label: 'Hjælperbank', href: '/udvalg/hjaelperbank' },
-                { label: 'Booking', href: 'https://bifvk.dk', external: true },
+                { label: 'Booking', href: '/udvalg/booking' },
             ],
         },
         {

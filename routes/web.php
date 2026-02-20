@@ -33,4 +33,5 @@ Route::prefix('udvalg')->name('udvalg.')->group(function () {
     Route::get('/tuen', fn () => app(PageController::class)->udvalgPage('Tuen'))->name('tuen');
     Route::get('/kulturudvalget', fn () => app(PageController::class)->udvalgPage('Kulturudvalget'))->name('kulturudvalget');
     Route::get('/hjaelperbank', fn () => app(PageController::class)->udvalgPage('Hjaelperbank'))->name('hjaelperbank');
+    Route::get('/booking', fn () => app(PageController::class)->udvalgPage('Booking'))->name('booking');
 });
