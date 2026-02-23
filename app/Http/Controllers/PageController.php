@@ -55,7 +55,66 @@ class PageController extends Controller
             return $response->body();
         });
 
-        return Inertia::render('Kalender', ['conventusHtml' => $html]);
+        $handballMatches = Cache::remember('dhf_biersted_matches', 3600, function () {
+            return $this->fetchBierstedHandballMatches();
+        });
+
+        return Inertia::render('Kalender', [
+            'conventusHtml' => $html,
+            'handballMatches' => $handballMatches,
+        ]);
+    }
+
+    private function fetchBierstedHandballMatches(): array
+    {
+        $matches = [];
+        $dateFrom = now()->format('Y-m-d');
+        $dateTo = now()->addMonths(3)->format('Y-m-d');
+        $currentPage = 1;
+        $totalPages = 1;
+
+        while ($currentPage <= $totalPages) {
+            $response = Http::get('https://cms.dhf.dk/api/v1/proxy', [
+                'endpoint' => "matches?pageSize=100&currentPage={$currentPage}&dateFrom={$dateFrom}&dateTo={$dateTo}",
+            ]);
+
+            if (! $response->successful()) {
+                break;
+            }
+
+            $data = $response->json();
+            $totalPages = $data['Meta']['TotalPages'] ?? 0;
+
+            foreach ($data['Data'] ?? [] as $match) {
+                $home = $match['HomeTeam']['Name'] ?? '';
+                $away = $match['AwayTeam']['Name'] ?? '';
+
+                if (stripos($home, 'Biersted') !== false || stripos($away, 'Biersted') !== false) {
+                    $matches[] = [
+                        'id' => $match['Id'],
+                        'date' => $match['Date'],
+                        'time' => $match['Time'],
+                        'homeTeam' => $home,
+                        'awayTeam' => $away,
+                        'stadium' => $match['Stadium']['Name'] ?? null,
+                        'row' => $match['Row']['Name'] ?? null,
+                        'homeGoals' => $match['Result']['HomeTeamGoals'] ?? null,
+                        'awayGoals' => $match['Result']['AwayTeamGoals'] ?? null,
+                    ];
+                }
+            }
+
+            // Safety: stop after scanning too many pages
+            if ($currentPage >= 50) {
+                break;
+            }
+
+            $currentPage++;
+        }
+
+        usort($matches, fn ($a, $b) => strcmp($a['date'] . $a['time'], $b['date'] . $b['time']));
+
+        return $matches;
     }
 
     public function kontakt(): Response
