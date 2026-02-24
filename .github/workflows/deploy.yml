@@ -60,7 +60,7 @@ jobs:
         run: |
           sudo apt-get install -y sshpass
           SSH_OPTS="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
-          sshpass -e scp -O $SSH_OPTS deploy.zip "$SSH_USER@$SSH_HOST:/www/deploy.zip"
+          sshpass -e scp -O -q $SSH_OPTS deploy.zip "$SSH_USER@$SSH_HOST:/www/deploy.zip"
 
       - name: Unzip on server
         env:
@@ -69,4 +69,4 @@ jobs:
           SSH_USER: ${{ secrets.SSH_USER }}
         run: |
           SSH_OPTS="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
-          sshpass -e ssh -v $SSH_OPTS "$SSH_USER@$SSH_HOST" "cd /www && unzip -o deploy.zip && rm -f deploy.zip"
+          sshpass -e ssh $SSH_OPTS "$SSH_USER@$SSH_HOST" "cd /www && unzip -o deploy.zip && rm -f deploy.zip"
