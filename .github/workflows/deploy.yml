@@ -59,5 +59,6 @@ jobs:
           SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
         run: |
           sudo apt-get install -y sshpass
-          sshpass -p "$SSH_PASSWORD" scp -o StrictHostKeyChecking=no deploy.zip "$SSH_USER@$SSH_HOST:/www/deploy.zip"
-          sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" "cd /www && unzip -o deploy.zip && rm -f deploy.zip"
+          SSH_OPTS="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
+          sshpass -p "$SSH_PASSWORD" scp $SSH_OPTS deploy.zip "$SSH_USER@$SSH_HOST:/www/deploy.zip"
+          sshpass -p "$SSH_PASSWORD" ssh $SSH_OPTS "$SSH_USER@$SSH_HOST" "cd /www && unzip -o deploy.zip && rm -f deploy.zip"
