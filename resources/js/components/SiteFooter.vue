@@ -1,5 +1,9 @@
 <script setup lang="ts">
 import { Mail, Phone, MapPin } from 'lucide-vue-next';
+import { Link, usePage } from '@inertiajs/vue3';
+
+const page = usePage<{ auth: { user: { id: number; name: string; email: string } | null } }>();
+const user = page.props.auth.user;
 </script>
 
 <template>
@@ -39,6 +43,9 @@ import { Mail, Phone, MapPin } from 'lucide-vue-next';
 
             <div class="mt-8 border-t border-gray-700 pt-6 text-center text-sm text-gray-400">
                 &copy; {{ new Date().getFullYear() }} Biersted IF. Alle rettigheder forbeholdes.
+                &middot;
+                <Link v-if="user" href="/dashboard" class="text-gray-500 transition hover:text-gray-300">Dashboard</Link>
+                <Link v-else href="/login" class="text-gray-500 transition hover:text-gray-300">Log ind</Link>
             </div>
         </div>
     </footer>

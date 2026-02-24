@@ -1,6 +1,9 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\ShiftController;
+use App\Models\Shift;
 use Illuminate\Support\Facades\Route;
 
 // Main pages
@@ -24,7 +27,7 @@ Route::prefix('tilmeldinger')->name('tilmeldinger.')->group(function () {
     Route::get('/floorball', fn () => app(PageController::class)->tilmelding('Floorball'))->name('floorball');
     Route::get('/dart', fn () => app(PageController::class)->tilmelding('Dart'))->name('dart');
     Route::get('/oevrige-hold', fn () => app(PageController::class)->tilmelding('OevrigeHold'))->name('oevrige-hold');
-    Route::get('/login', fn () => inertia('Tilmeldinger/Login'))->name('login');
+    Route::get('/login', fn () => inertia('Tilmeldinger/Login'))->name('conventus-login');
 });
 
 // Udvalg
@@ -35,4 +38,20 @@ Route::prefix('udvalg')->name('udvalg.')->group(function () {
     Route::get('/eventudvalget', fn () => app(PageController::class)->udvalgPage('Kulturudvalget'))->name('eventudvalget');
     Route::get('/hjaelperbank', fn () => app(PageController::class)->udvalgPage('Hjaelperbank'))->name('hjaelperbank');
     Route::get('/booking', fn () => app(PageController::class)->udvalgPage('Booking'))->name('booking');
+});
+
+// Auth
+Route::middleware('guest')->group(function () {
+    Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+    Route::post('/login', [AuthController::class, 'login']);
+});
+
+Route::middleware('auth')->group(function () {
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+    Route::get('/dashboard', fn () => inertia('Dashboard', [
+        'shifts' => Shift::with('assignee')->orderBy('start_time')->get(),
+    ]))->name('dashboard');
+
+    Route::post('/shifts', [ShiftController::class, 'store'])->name('shifts.store');
+    Route::delete('/shifts/{shift}', [ShiftController::class, 'destroy'])->name('shifts.destroy');
 });
