@@ -34,7 +34,21 @@ jobs:
       - name: Create production .env
         env:
           ENV_FILE: ${{ secrets.ENV_FILE }}
-        run: printf '%s\n' "$ENV_FILE" > .env
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_PORT: ${{ secrets.DB_PORT }}
+          DB_DATABASE: ${{ secrets.DB_DATABASE }}
+          DB_USERNAME: ${{ secrets.DB_USERNAME }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+        run: |
+          printf '%s\n' "$ENV_FILE" > .env
+          {
+            echo "DB_CONNECTION=mysql"
+            echo "DB_HOST=$DB_HOST"
+            echo "DB_PORT=$DB_PORT"
+            echo "DB_DATABASE=$DB_DATABASE"
+            echo "DB_USERNAME=$DB_USERNAME"
+            echo "DB_PASSWORD=$DB_PASSWORD"
+          } >> .env
 
       - name: Create deployment zip
         run: |
@@ -69,4 +83,4 @@ jobs:
           SSH_USER: ${{ secrets.SSH_USER }}
         run: |
           SSH_OPTS="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
-          sshpass -e ssh $SSH_OPTS "$SSH_USER@$SSH_HOST" "cd /www && unzip -o deploy.zip && rm -f deploy.zip"
+          sshpass -e ssh $SSH_OPTS "$SSH_USER@$SSH_HOST" "cd /www && unzip -o deploy.zip && rm -f deploy.zip && php artisan migrate --force"
