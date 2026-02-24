@@ -52,7 +52,7 @@ jobs:
             -x "./phpunit.xml" \
             -x "./.gitignore"
 
-      - name: Deploy to server
+      - name: Upload to server
         env:
           SSHPASS: ${{ secrets.SSH_PASSWORD }}
           SSH_HOST: ${{ secrets.SSH_HOST }}
@@ -60,5 +60,13 @@ jobs:
         run: |
           sudo apt-get install -y sshpass
           SSH_OPTS="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
-          sshpass -e scp $SSH_OPTS deploy.zip "$SSH_USER@$SSH_HOST:/www/deploy.zip"
-          sshpass -e ssh $SSH_OPTS "$SSH_USER@$SSH_HOST" "cd /www && unzip -o deploy.zip && rm -f deploy.zip"
+          sshpass -e scp -v $SSH_OPTS deploy.zip "$SSH_USER@$SSH_HOST:/www/deploy.zip"
+
+      - name: Unzip on server
+        env:
+          SSHPASS: ${{ secrets.SSH_PASSWORD }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+        run: |
+          SSH_OPTS="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
+          sshpass -e ssh -v $SSH_OPTS "$SSH_USER@$SSH_HOST" "cd /www && unzip -o deploy.zip && rm -f deploy.zip"
