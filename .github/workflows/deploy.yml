@@ -54,11 +54,11 @@ jobs:
 
       - name: Deploy to server
         env:
+          SSHPASS: ${{ secrets.SSH_PASSWORD }}
           SSH_HOST: ${{ secrets.SSH_HOST }}
           SSH_USER: ${{ secrets.SSH_USER }}
-          SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
         run: |
           sudo apt-get install -y sshpass
           SSH_OPTS="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
-          sshpass -p "$SSH_PASSWORD" scp $SSH_OPTS deploy.zip "$SSH_USER@$SSH_HOST:/www/deploy.zip"
-          sshpass -p "$SSH_PASSWORD" ssh $SSH_OPTS "$SSH_USER@$SSH_HOST" "cd /www && unzip -o deploy.zip && rm -f deploy.zip"
+          sshpass -e scp $SSH_OPTS deploy.zip "$SSH_USER@$SSH_HOST:/www/deploy.zip"
+          sshpass -e ssh $SSH_OPTS "$SSH_USER@$SSH_HOST" "cd /www && unzip -o deploy.zip && rm -f deploy.zip"
