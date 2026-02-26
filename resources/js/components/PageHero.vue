@@ -4,14 +4,16 @@ const props = withDefaults(defineProps<{
     subtitle?: string;
     bg?: string;
     bgPosition?: string;
+    bgContain?: boolean;
 }>(), {
     bgPosition: 'center 30%',
+    bgContain: false,
 });
 </script>
 
 <template>
     <div class="relative bg-bif-header px-4 py-12 text-white md:py-16">
-        <img v-if="bg" :src="bg" :alt="title" class="absolute inset-0 h-full w-full object-cover" :style="{ objectPosition: props.bgPosition }" />
+        <img v-if="bg" :src="bg" :alt="title" class="absolute inset-0 h-full w-full" :class="bgContain ? 'object-contain' : 'object-cover'" :style="{ objectPosition: props.bgPosition }" />
         <div v-if="bg" class="absolute inset-0 bg-black/50"></div>
         <div class="relative mx-auto max-w-5xl">
             <h1 class="text-2xl font-bold md:text-4xl">{{ title }}</h1>
