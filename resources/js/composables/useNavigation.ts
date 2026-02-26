@@ -22,6 +22,7 @@ export function useNavigation(): NavItem[] {
                 { label: 'Eventudvalget', href: '/udvalg/eventudvalget' },
                 { label: 'Hjælperbank', href: '/udvalg/hjaelperbank' },
                 { label: 'Booking', href: '/udvalg/booking' },
+                { label: 'Mosefesten', href: '/udvalg/mosefesten' },
             ],
         },
         {

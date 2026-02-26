@@ -38,6 +38,7 @@ Route::prefix('udvalg')->name('udvalg.')->group(function () {
     Route::get('/eventudvalget', fn () => app(PageController::class)->udvalgPage('Kulturudvalget'))->name('eventudvalget');
     Route::get('/hjaelperbank', fn () => app(PageController::class)->udvalgPage('Hjaelperbank'))->name('hjaelperbank');
     Route::get('/booking', fn () => app(PageController::class)->udvalgPage('Booking'))->name('booking');
+    Route::get('/mosefesten', fn () => app(PageController::class)->udvalgPage('Mosefesten'))->name('mosefesten');
 });
 
 // Auth
