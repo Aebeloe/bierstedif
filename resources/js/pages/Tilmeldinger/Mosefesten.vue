@@ -153,19 +153,11 @@ const calendarDays = computed<CalendarDay[]>(() => {
                             :class="shift.available === 0 ? 'opacity-75' : ''"
                         >
                             <div class="p-5">
-                                <div class="flex items-start justify-between gap-3">
-                                    <div>
-                                        <h4 class="font-semibold text-gray-900">{{ shift.name }}</h4>
-                                        <p class="mt-1 text-sm text-bif-muted">
-                                            {{ formatTime(shift.start_time) }} &ndash; {{ formatTime(shift.end_time) }}
-                                        </p>
-                                    </div>
-                                    <span
-                                        class="inline-flex shrink-0 items-center rounded-full px-2.5 py-0.5 text-xs font-medium"
-                                        :class="shift.available > 0 ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'"
-                                    >
-                                        {{ shift.available > 0 ? `${shift.available} af ${shift.total} ledige` : 'Fuldt besat' }}
-                                    </span>
+                                <div>
+                                    <h4 class="font-semibold text-gray-900">{{ shift.name }}</h4>
+                                    <p class="mt-1 text-sm text-bif-muted">
+                                        {{ formatTime(shift.start_time) }} &ndash; {{ formatTime(shift.end_time) }}
+                                    </p>
                                 </div>
 
                                 <p v-if="shift.description" class="mt-2 text-sm leading-relaxed text-bif-muted">
@@ -181,6 +173,13 @@ const calendarDays = computed<CalendarDay[]>(() => {
                                         {{ name }}
                                     </span>
                                 </div>
+
+                                <span
+                                    class="mt-3 inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium"
+                                    :class="shift.available > 0 ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'"
+                                >
+                                    {{ shift.available > 0 ? `${shift.available} af ${shift.total} ledige` : 'Fuldt besat' }}
+                                </span>
 
                                 <button
                                     v-if="shift.available > 0"
