@@ -13,7 +13,14 @@ class Shift extends Model
         'start_time',
         'end_time',
         'user_id',
+        'volunteer_name',
+        'volunteer_contact',
     ];
+
+    public function isClaimed(): bool
+    {
+        return $this->user_id !== null || $this->volunteer_name !== null;
+    }
 
     protected function casts(): array
     {

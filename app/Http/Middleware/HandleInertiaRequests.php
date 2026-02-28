@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Setting;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -40,6 +41,7 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $request->user() ? $request->user()->only('id', 'name', 'email') : null,
             ],
+            'mosefestenVisible' => $request->user() !== null || Setting::get('mosefesten_public', '0') === '1',
         ];
     }
 }

@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ShiftController;
+use App\Models\Setting;
 use App\Models\Shift;
 use Illuminate\Support\Facades\Route;
 
@@ -16,6 +17,7 @@ Route::get('/sponsorer', [PageController::class, 'sponsorer'])->name('sponsorer'
 
 // Tilmeldinger
 Route::prefix('tilmeldinger')->name('tilmeldinger.')->group(function () {
+    Route::get('/', [PageController::class, 'tilmeldingIndex'])->name('index');
     Route::get('/proevetraening', fn () => app(PageController::class)->tilmelding('Proevetraening'))->name('proevetraening');
     Route::get('/badminton', fn () => app(PageController::class)->tilmelding('Badminton'))->name('badminton');
     Route::get('/fodbold', fn () => app(PageController::class)->tilmelding('Fodbold'))->name('fodbold');
@@ -27,6 +29,8 @@ Route::prefix('tilmeldinger')->name('tilmeldinger.')->group(function () {
     Route::get('/floorball', fn () => app(PageController::class)->tilmelding('Floorball'))->name('floorball');
     Route::get('/dart', fn () => app(PageController::class)->tilmelding('Dart'))->name('dart');
     Route::get('/oevrige-hold', fn () => app(PageController::class)->tilmelding('OevrigeHold'))->name('oevrige-hold');
+    Route::get('/mosefesten', [ShiftController::class, 'mosefestenIndex'])->name('mosefesten');
+    Route::post('/mosefesten/{shift}/claim', [ShiftController::class, 'claim'])->name('mosefesten.claim')->middleware('throttle:10,1');
     Route::get('/login', fn () => inertia('Tilmeldinger/Login'))->name('conventus-login');
 });
 
@@ -50,9 +54,11 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('/dashboard', fn () => inertia('Dashboard', [
-        'shifts' => Shift::with('assignee')->orderBy('start_time')->get(),
+        'shifts' => app(ShiftController::class)->dashboardShifts(),
+        'mosefestenPublic' => Setting::get('mosefesten_public', '0') === '1',
     ]))->name('dashboard');
 
+    Route::post('/dashboard/toggle-mosefesten', [ShiftController::class, 'toggleMosefesten'])->name('dashboard.toggle-mosefesten');
     Route::post('/shifts', [ShiftController::class, 'store'])->name('shifts.store');
     Route::delete('/shifts/{shift}', [ShiftController::class, 'destroy'])->name('shifts.destroy');
 });

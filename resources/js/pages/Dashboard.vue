@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import MainLayout from '@/layouts/MainLayout.vue';
 import { Head, usePage, router, useForm } from '@inertiajs/vue3';
+import { computed } from 'vue';
 
 defineOptions({ layout: MainLayout });
 
@@ -10,14 +11,26 @@ interface User {
     email: string;
 }
 
+interface Volunteer {
+    name: string;
+    contact: string;
+}
+
 interface Shift {
-    id: number;
     name: string;
     description: string | null;
     start_time: string;
     end_time: string;
-    assignee: User | null;
+    total: number;
+    claimed: number;
+    available: number;
+    volunteers: Volunteer[];
+    shift_ids: number[];
 }
+
+const props = defineProps<{
+    mosefestenPublic: boolean;
+}>();
 
 const page = usePage<{
     auth: { user: User };
@@ -50,23 +63,53 @@ function createShifts() {
     })).post('/shifts', { onSuccess: () => form.reset() });
 }
 
-function deleteShift(id: number) {
-    router.delete(`/shifts/${id}`);
+function deleteShiftGroup(ids: number[]) {
+    if (!confirm(`Slet alle ${ids.length} vagt(er) i denne gruppe?`)) return;
+    ids.forEach((id) => router.delete(`/shifts/${id}`, { preserveScroll: true }));
+}
+
+function toggleMosefesten() {
+    router.post('/dashboard/toggle-mosefesten');
 }
 
 function logout() {
     router.post('/logout');
 }
 
-function formatDateTime(dt: string): string {
+function formatTime(dt: string): string {
     const d = new Date(dt);
-    const day = String(d.getDate()).padStart(2, '0');
-    const month = String(d.getMonth() + 1).padStart(2, '0');
-    const year = d.getFullYear();
-    const hours = String(d.getHours()).padStart(2, '0');
-    const minutes = String(d.getMinutes()).padStart(2, '0');
-    return `${day}/${month}/${year} ${hours}:${minutes}`;
+    return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
 }
+
+function formatDateHeader(dateStr: string): string {
+    const d = new Date(dateStr);
+    const days = ['søndag', 'mandag', 'tirsdag', 'onsdag', 'torsdag', 'fredag', 'lørdag'];
+    const months = ['januar', 'februar', 'marts', 'april', 'maj', 'juni', 'juli', 'august', 'september', 'oktober', 'november', 'december'];
+    return `${days[d.getDay()]} ${d.getDate()}. ${months[d.getMonth()]}`;
+}
+
+function dateKey(dt: string): string {
+    const d = new Date(dt);
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
+interface CalendarDay {
+    date: string;
+    shifts: Shift[];
+}
+
+const calendarDays = computed<CalendarDay[]>(() => {
+    const grouped = new Map<string, Shift[]>();
+    for (const shift of page.props.shifts) {
+        const key = dateKey(shift.start_time);
+        if (!grouped.has(key)) grouped.set(key, []);
+        grouped.get(key)!.push(shift);
+    }
+
+    return [...grouped.entries()]
+        .sort(([a], [b]) => a.localeCompare(b))
+        .map(([date, shifts]) => ({ date, shifts }));
+});
 </script>
 
 <template>
@@ -83,6 +126,22 @@ function formatDateTime(dt: string): string {
                         @click="logout"
                     >
                         Log ud
+                    </button>
+                </div>
+
+                <div class="mt-4 flex items-center justify-between border-t border-gray-100 pt-4">
+                    <span class="text-sm font-medium text-gray-700">Mosefesten synlig for besøgende</span>
+                    <button
+                        class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-bif-accent focus:ring-offset-2"
+                        :class="props.mosefestenPublic ? 'bg-bif-accent' : 'bg-gray-200'"
+                        role="switch"
+                        :aria-checked="props.mosefestenPublic"
+                        @click="toggleMosefesten"
+                    >
+                        <span
+                            class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
+                            :class="props.mosefestenPublic ? 'translate-x-5' : 'translate-x-0'"
+                        />
                     </button>
                 </div>
             </div>
@@ -193,7 +252,7 @@ function formatDateTime(dt: string): string {
                 </form>
             </div>
 
-            <!-- Shifts Table -->
+            <!-- Shifts -->
             <div class="rounded-xl bg-white p-8 shadow-md">
                 <h2 class="text-xl font-bold">Vagter</h2>
 
@@ -201,40 +260,59 @@ function formatDateTime(dt: string): string {
                     Ingen vagter oprettet endnu.
                 </div>
 
-                <div v-else class="mt-4 overflow-x-auto">
-                    <table class="w-full text-left text-sm">
-                        <thead>
-                            <tr class="border-b border-gray-200 text-gray-600">
-                                <th class="pb-3 pr-4 font-medium">Navn</th>
-                                <th class="pb-3 pr-4 font-medium">Beskrivelse</th>
-                                <th class="pb-3 pr-4 font-medium">Start</th>
-                                <th class="pb-3 pr-4 font-medium">Slut</th>
-                                <th class="pb-3 pr-4 font-medium">Tildelt</th>
-                                <th class="pb-3 font-medium"></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr
-                                v-for="shift in page.props.shifts"
-                                :key="shift.id"
-                                class="border-b border-gray-100 last:border-0"
+                <div v-else class="mt-6 space-y-8">
+                    <div v-for="day in calendarDays" :key="day.date">
+                        <h3 class="text-lg font-bold capitalize text-gray-800">
+                            {{ formatDateHeader(day.date) }}
+                        </h3>
+
+                        <div class="mt-3 space-y-4">
+                            <div
+                                v-for="shift in day.shifts"
+                                :key="shift.shift_ids.join(',')"
+                                class="rounded-xl border border-gray-200 p-5"
+                                :class="shift.available === 0 ? 'bg-green-50' : ''"
                             >
-                                <td class="py-3 pr-4 font-medium">{{ shift.name }}</td>
-                                <td class="py-3 pr-4 text-gray-600">{{ shift.description || '—' }}</td>
-                                <td class="py-3 pr-4 whitespace-nowrap">{{ formatDateTime(shift.start_time) }}</td>
-                                <td class="py-3 pr-4 whitespace-nowrap">{{ formatDateTime(shift.end_time) }}</td>
-                                <td class="py-3 pr-4">{{ shift.assignee?.name || '—' }}</td>
-                                <td class="py-3 text-right">
-                                    <button
-                                        class="rounded-lg bg-red-100 px-3 py-1 text-sm font-medium text-red-700 transition hover:bg-red-200"
-                                        @click="deleteShift(shift.id)"
+                                <div class="flex items-start justify-between gap-3">
+                                    <div>
+                                        <h4 class="font-semibold text-gray-900">{{ shift.name }}</h4>
+                                        <p class="mt-1 text-sm text-bif-muted">
+                                            {{ formatTime(shift.start_time) }} &ndash; {{ formatTime(shift.end_time) }}
+                                        </p>
+                                    </div>
+                                    <div class="flex shrink-0 items-center gap-2">
+                                        <span
+                                            class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium"
+                                            :class="shift.available > 0 ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'"
+                                        >
+                                            {{ shift.available > 0 ? `${shift.claimed}/${shift.total} besat` : 'Fuldt besat' }}
+                                        </span>
+                                        <button
+                                            class="rounded-lg bg-red-100 px-3 py-1 text-xs font-medium text-red-700 transition hover:bg-red-200"
+                                            @click="deleteShiftGroup(shift.shift_ids)"
+                                        >
+                                            Slet
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <p v-if="shift.description" class="mt-2 text-sm text-bif-muted">
+                                    {{ shift.description }}
+                                </p>
+
+                                <div v-if="shift.volunteers.length > 0" class="mt-3">
+                                    <div
+                                        v-for="(v, i) in shift.volunteers"
+                                        :key="i"
+                                        class="flex items-center gap-2 border-t border-gray-100 py-2 text-sm first:border-0"
                                     >
-                                        Slet
-                                    </button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                                        <span class="font-medium text-gray-800">{{ v.name }}</span>
+                                        <span v-if="v.contact" class="text-gray-500">{{ v.contact }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

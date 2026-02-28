@@ -23,6 +23,9 @@ const quickCards = [
             <Link href="/tilmeldinger/proevetraening" class="rounded-lg bg-bif-accent px-6 py-3 font-medium text-white transition hover:bg-bif-accent-dark">
                 Prøv en gratis træning
             </Link>
+            <Link href="/tilmeldinger" class="rounded-lg border border-bif-accent px-6 py-3 font-medium text-white transition hover:bg-bif-accent/10">
+                Tilmeld dig et hold
+            </Link>
             <Link href="/om-foreningen" class="rounded-lg border border-white/30 px-6 py-3 font-medium text-white transition hover:bg-white/10">
                 Læs mere om os
             </Link>

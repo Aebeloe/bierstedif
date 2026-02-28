@@ -193,6 +193,25 @@ class PageController extends Controller
         return $html;
     }
 
+    public function tilmeldingIndex(): Response
+    {
+        $sections = [];
+
+        foreach (self::CONVENTUS_URLS as $page => $url) {
+            $filter = self::CONVENTUS_FILTERS[$page] ?? null;
+
+            $sections[$page] = Cache::remember(
+                "conventus_html_{$page}",
+                3600,
+                fn () => $this->fetchConventusHtml($url, $filter)
+            );
+        }
+
+        return Inertia::render('Tilmeldinger/Index', [
+            'sections' => $sections,
+        ]);
+    }
+
     public function udvalgPage(string $page): Response
     {
         return Inertia::render("Udvalg/{$page}");
