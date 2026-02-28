@@ -112,7 +112,7 @@ const calendarDays = computed<CalendarDay[]>(() => {
     <PageHero title="Mosefesten" subtitle="Tilmeld dig som frivillig" bg="/mosefestheader.jpeg" :bgContain="true" />
 
     <div class="px-4 py-12 md:py-16">
-        <div class="mx-auto max-w-6xl">
+        <div class="mx-auto max-w-7xl">
             <!-- Intro -->
             <div class="rounded-xl bg-white p-6 shadow-md md:p-8">
                 <h2 class="text-xl font-bold">Bliv frivillig til Mosefesten</h2>
@@ -129,7 +129,7 @@ const calendarDays = computed<CalendarDay[]>(() => {
             </div>
 
             <!-- Calendar grid: dates side by side -->
-            <div v-else class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div v-else class="mt-8 grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
                 <div v-for="day in calendarDays" :key="day.date">
                     <!-- Date header -->
                     <h3 class="text-lg font-bold capitalize text-gray-800">
