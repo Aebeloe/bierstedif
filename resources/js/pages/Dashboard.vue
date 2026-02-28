@@ -19,6 +19,7 @@ interface Volunteer {
 interface Shift {
     name: string;
     description: string | null;
+    category: string | null;
     start_time: string;
     end_time: string;
     total: number;
@@ -41,6 +42,7 @@ const user = page.props.auth.user;
 const form = useForm({
     name: '',
     description: '',
+    category: '',
     start_date: '',
     start_time: '',
     end_date: '',
@@ -57,6 +59,7 @@ function createShifts() {
     form.transform((data) => ({
         name: data.name,
         description: data.description,
+        category: data.category || null,
         start_time: parseDanishDate(data.start_date, data.start_time),
         end_time: parseDanishDate(data.end_date, data.end_time),
         quantity: data.quantity,
@@ -174,6 +177,18 @@ const calendarDays = computed<CalendarDay[]>(() => {
                         <p v-if="form.errors.description" class="mt-1 text-sm text-red-600">{{ form.errors.description }}</p>
                     </div>
 
+                    <div>
+                        <label for="shift-category" class="block text-sm font-medium text-gray-700">Kategori</label>
+                        <input
+                            id="shift-category"
+                            v-model="form.category"
+                            type="text"
+                            placeholder="F.eks. Bar, Scene, Rengøring..."
+                            class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-bif-accent focus:outline-none focus:ring-1 focus:ring-bif-accent"
+                        />
+                        <p v-if="form.errors.category" class="mt-1 text-sm text-red-600">{{ form.errors.category }}</p>
+                    </div>
+
                     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                         <div>
                             <label for="shift-start-date" class="block text-sm font-medium text-gray-700">Startdato</label>
@@ -275,7 +290,10 @@ const calendarDays = computed<CalendarDay[]>(() => {
                             >
                                 <div class="flex items-start justify-between gap-3">
                                     <div>
-                                        <h4 class="font-semibold text-gray-900">{{ shift.name }}</h4>
+                                        <h4 class="font-semibold text-gray-900">
+                                            {{ shift.name }}
+                                            <span v-if="shift.category" class="ml-2 inline-flex items-center rounded-full bg-purple-100 px-2 py-0.5 text-xs font-medium text-purple-800">{{ shift.category }}</span>
+                                        </h4>
                                         <p class="mt-1 text-sm text-bif-muted">
                                             {{ formatTime(shift.start_time) }} &ndash; {{ formatTime(shift.end_time) }}
                                         </p>

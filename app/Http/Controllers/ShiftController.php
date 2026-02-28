@@ -22,7 +22,7 @@ class ShiftController extends Controller
 
         // Group identical shifts (same name, description, start_time, end_time)
         $grouped = $shifts->groupBy(fn (Shift $s) =>
-            $s->name.'|'.$s->description.'|'.$s->start_time->toIso8601String().'|'.$s->end_time->toIso8601String()
+            $s->name.'|'.$s->description.'|'.$s->start_time->toIso8601String().'|'.$s->end_time->toIso8601String().'|'.$s->category
         )->map(function ($group) {
             $first = $group->first();
             $unclaimed = $group->first(fn (Shift $s) => !$s->isClaimed());
@@ -36,6 +36,7 @@ class ShiftController extends Controller
                 'id' => $unclaimed?->id ?? $first->id,
                 'name' => $first->name,
                 'description' => $first->description,
+                'category' => $first->category,
                 'start_time' => $first->start_time->toIso8601String(),
                 'end_time' => $first->end_time->toIso8601String(),
                 'total' => $group->count(),
@@ -71,7 +72,7 @@ class ShiftController extends Controller
         $shifts = Shift::with('assignee')->orderBy('start_time')->get();
 
         $grouped = $shifts->groupBy(fn (Shift $s) =>
-            $s->name.'|'.$s->description.'|'.$s->start_time->toIso8601String().'|'.$s->end_time->toIso8601String()
+            $s->name.'|'.$s->description.'|'.$s->start_time->toIso8601String().'|'.$s->end_time->toIso8601String().'|'.$s->category
         )->map(function ($group) {
             $first = $group->first();
 
@@ -84,6 +85,7 @@ class ShiftController extends Controller
             return [
                 'name' => $first->name,
                 'description' => $first->description,
+                'category' => $first->category,
                 'start_time' => $first->start_time->toIso8601String(),
                 'end_time' => $first->end_time->toIso8601String(),
                 'total' => $group->count(),
@@ -105,12 +107,14 @@ class ShiftController extends Controller
             'start_time' => ['required', 'date'],
             'end_time' => ['required', 'date', 'after:start_time'],
             'quantity' => ['required', 'integer', 'min:1', 'max:50'],
+            'category' => ['nullable', 'string', 'max:255'],
         ]);
 
         for ($i = 0; $i < $validated['quantity']; $i++) {
             Shift::create([
                 'name' => $validated['name'],
                 'description' => $validated['description'] ?? null,
+                'category' => $validated['category'] ?? null,
                 'start_time' => $validated['start_time'],
                 'end_time' => $validated['end_time'],
             ]);
