@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import MainLayout from '@/layouts/MainLayout.vue';
-import { Head, usePage, router, useForm } from '@inertiajs/vue3';
+import { Head, Link, usePage, router, useForm } from '@inertiajs/vue3';
 import { computed } from 'vue';
 
 defineOptions({ layout: MainLayout });
@@ -124,12 +124,20 @@ const calendarDays = computed<CalendarDay[]>(() => {
             <div class="rounded-xl bg-white p-8 shadow-md">
                 <div class="flex items-center justify-between">
                     <h1 class="text-2xl font-bold">Velkommen, {{ user.name }}</h1>
-                    <button
-                        class="rounded-lg bg-gray-200 px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-300"
-                        @click="logout"
-                    >
-                        Log ud
-                    </button>
+                    <div class="flex items-center gap-2">
+                        <Link
+                            href="/dashboard/vagt-guide"
+                            class="rounded-lg bg-gray-200 px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-300"
+                        >
+                            Hjælp
+                        </Link>
+                        <button
+                            class="rounded-lg bg-gray-200 px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-300"
+                            @click="logout"
+                        >
+                            Log ud
+                        </button>
+                    </div>
                 </div>
 
                 <div class="mt-4 flex items-center justify-between border-t border-gray-100 pt-4">
