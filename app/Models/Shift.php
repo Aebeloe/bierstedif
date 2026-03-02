@@ -16,6 +16,7 @@ class Shift extends Model
         'volunteer_name',
         'volunteer_contact',
         'category',
+        'group_id',
     ];
 
     public function isClaimed(): bool

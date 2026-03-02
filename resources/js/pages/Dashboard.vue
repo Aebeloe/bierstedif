@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import MainLayout from '@/layouts/MainLayout.vue';
 import { Head, Link, usePage, router, useForm } from '@inertiajs/vue3';
-import { computed } from 'vue';
+import { computed, reactive } from 'vue';
 
 defineOptions({ layout: MainLayout });
 
@@ -12,11 +12,13 @@ interface User {
 }
 
 interface Volunteer {
+    shift_id: number;
     name: string;
     contact: string;
 }
 
 interface Shift {
+    group_id: string;
     name: string;
     description: string | null;
     category: string | null;
@@ -50,9 +52,70 @@ const form = useForm({
     quantity: 1,
 });
 
+// Track which shift group is being edited
+const editing = reactive<Record<string, boolean>>({});
+const editForms = reactive<Record<string, {
+    name: string;
+    description: string;
+    category: string;
+    start_date: string;
+    start_time: string;
+    end_date: string;
+    end_time: string;
+}>>({});
+
 function parseDanishDate(date: string, time: string): string {
     const [day, month, year] = date.split('/');
     return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}T${time}`;
+}
+
+function toDateStr(isoStr: string): string {
+    const d = new Date(isoStr);
+    return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
+}
+
+function toTimeStr(isoStr: string): string {
+    const d = new Date(isoStr);
+    return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+}
+
+function startEditing(shift: Shift) {
+    editing[shift.group_id] = true;
+    editForms[shift.group_id] = {
+        name: shift.name,
+        description: shift.description ?? '',
+        category: shift.category ?? '',
+        start_date: toDateStr(shift.start_time),
+        start_time: toTimeStr(shift.start_time),
+        end_date: toDateStr(shift.end_time),
+        end_time: toTimeStr(shift.end_time),
+    };
+}
+
+function cancelEditing(groupId: string) {
+    editing[groupId] = false;
+    delete editForms[groupId];
+}
+
+function saveEdit(groupId: string) {
+    const ef = editForms[groupId];
+    if (!ef) return;
+
+    router.put(`/shifts/group/${groupId}`, {
+        name: ef.name,
+        description: ef.description || null,
+        category: ef.category || null,
+        start_time: parseDanishDate(ef.start_date, ef.start_time),
+        end_time: parseDanishDate(ef.end_date, ef.end_time),
+    }, {
+        preserveScroll: true,
+        onSuccess: () => cancelEditing(groupId),
+    });
+}
+
+function removeVolunteer(shiftId: number) {
+    if (!confirm('Fjern denne frivillig fra vagten?')) return;
+    router.delete(`/shifts/${shiftId}/claim`, { preserveScroll: true });
 }
 
 function createShifts() {
@@ -292,48 +355,160 @@ const calendarDays = computed<CalendarDay[]>(() => {
                         <div class="mt-3 space-y-4">
                             <div
                                 v-for="shift in day.shifts"
-                                :key="shift.shift_ids.join(',')"
+                                :key="shift.group_id"
                                 class="rounded-xl border border-gray-200 p-5"
                                 :class="shift.available === 0 ? 'bg-green-50' : ''"
                             >
-                                <div class="flex items-start justify-between gap-3">
-                                    <div>
-                                        <h4 class="font-semibold text-gray-900">
-                                            {{ shift.name }}
-                                            <span v-if="shift.category" class="ml-2 inline-flex items-center rounded-full bg-purple-100 px-2 py-0.5 text-xs font-medium text-purple-800">{{ shift.category }}</span>
-                                        </h4>
-                                        <p class="mt-1 text-sm text-bif-muted">
-                                            {{ formatTime(shift.start_time) }} &ndash; {{ formatTime(shift.end_time) }}
-                                        </p>
+                                <!-- View mode -->
+                                <template v-if="!editing[shift.group_id]">
+                                    <div class="flex items-start justify-between gap-3">
+                                        <div>
+                                            <h4 class="font-semibold text-gray-900">
+                                                {{ shift.name }}
+                                                <span v-if="shift.category" class="ml-2 inline-flex items-center rounded-full bg-purple-100 px-2 py-0.5 text-xs font-medium text-purple-800">{{ shift.category }}</span>
+                                            </h4>
+                                            <p class="mt-1 text-sm text-bif-muted">
+                                                {{ formatTime(shift.start_time) }} &ndash; {{ formatTime(shift.end_time) }}
+                                            </p>
+                                        </div>
+                                        <div class="flex shrink-0 items-center gap-2">
+                                            <span
+                                                class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium"
+                                                :class="shift.available > 0 ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'"
+                                            >
+                                                {{ shift.available > 0 ? `${shift.claimed}/${shift.total} besat` : 'Fuldt besat' }}
+                                            </span>
+                                            <button
+                                                class="rounded-lg bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700 transition hover:bg-gray-200"
+                                                @click="startEditing(shift)"
+                                            >
+                                                Rediger
+                                            </button>
+                                            <button
+                                                class="rounded-lg bg-red-100 px-3 py-1 text-xs font-medium text-red-700 transition hover:bg-red-200"
+                                                @click="deleteShiftGroup(shift.shift_ids)"
+                                            >
+                                                Slet
+                                            </button>
+                                        </div>
                                     </div>
-                                    <div class="flex shrink-0 items-center gap-2">
-                                        <span
-                                            class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium"
-                                            :class="shift.available > 0 ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'"
-                                        >
-                                            {{ shift.available > 0 ? `${shift.claimed}/${shift.total} besat` : 'Fuldt besat' }}
-                                        </span>
-                                        <button
-                                            class="rounded-lg bg-red-100 px-3 py-1 text-xs font-medium text-red-700 transition hover:bg-red-200"
-                                            @click="deleteShiftGroup(shift.shift_ids)"
-                                        >
-                                            Slet
-                                        </button>
-                                    </div>
-                                </div>
 
-                                <p v-if="shift.description" class="mt-2 text-sm text-bif-muted">
-                                    {{ shift.description }}
-                                </p>
+                                    <p v-if="shift.description" class="mt-2 text-sm text-bif-muted">
+                                        {{ shift.description }}
+                                    </p>
+                                </template>
 
+                                <!-- Edit mode -->
+                                <template v-else>
+                                    <form class="space-y-3" @submit.prevent="saveEdit(shift.group_id)">
+                                        <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-700">Navn</label>
+                                                <input
+                                                    v-model="editForms[shift.group_id].name"
+                                                    type="text"
+                                                    required
+                                                    class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-bif-accent focus:outline-none focus:ring-1 focus:ring-bif-accent"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-700">Kategori</label>
+                                                <input
+                                                    v-model="editForms[shift.group_id].category"
+                                                    type="text"
+                                                    placeholder="F.eks. Bar, Scene..."
+                                                    class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-bif-accent focus:outline-none focus:ring-1 focus:ring-bif-accent"
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700">Beskrivelse</label>
+                                            <textarea
+                                                v-model="editForms[shift.group_id].description"
+                                                rows="2"
+                                                class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-bif-accent focus:outline-none focus:ring-1 focus:ring-bif-accent"
+                                            />
+                                        </div>
+
+                                        <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-700">Startdato</label>
+                                                <input
+                                                    v-model="editForms[shift.group_id].start_date"
+                                                    type="text"
+                                                    placeholder="dd/mm/åååå"
+                                                    pattern="\d{1,2}/\d{1,2}/\d{4}"
+                                                    required
+                                                    class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-bif-accent focus:outline-none focus:ring-1 focus:ring-bif-accent"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-700">Starttid</label>
+                                                <input
+                                                    v-model="editForms[shift.group_id].start_time"
+                                                    type="time"
+                                                    required
+                                                    class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-bif-accent focus:outline-none focus:ring-1 focus:ring-bif-accent"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-700">Slutdato</label>
+                                                <input
+                                                    v-model="editForms[shift.group_id].end_date"
+                                                    type="text"
+                                                    placeholder="dd/mm/åååå"
+                                                    pattern="\d{1,2}/\d{1,2}/\d{4}"
+                                                    required
+                                                    class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-bif-accent focus:outline-none focus:ring-1 focus:ring-bif-accent"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-700">Sluttid</label>
+                                                <input
+                                                    v-model="editForms[shift.group_id].end_time"
+                                                    type="time"
+                                                    required
+                                                    class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-bif-accent focus:outline-none focus:ring-1 focus:ring-bif-accent"
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div class="flex items-center gap-2 pt-1">
+                                            <button
+                                                type="submit"
+                                                class="rounded-lg bg-bif-accent px-4 py-1.5 text-sm font-medium text-white transition hover:bg-bif-accent-dark"
+                                            >
+                                                Gem
+                                            </button>
+                                            <button
+                                                type="button"
+                                                class="rounded-lg bg-gray-100 px-4 py-1.5 text-sm font-medium text-gray-700 transition hover:bg-gray-200"
+                                                @click="cancelEditing(shift.group_id)"
+                                            >
+                                                Annuller
+                                            </button>
+                                        </div>
+                                    </form>
+                                </template>
+
+                                <!-- Volunteers list (shown in both modes) -->
                                 <div v-if="shift.volunteers.length > 0" class="mt-3">
                                     <div
                                         v-for="(v, i) in shift.volunteers"
-                                        :key="i"
-                                        class="flex items-center gap-2 border-t border-gray-100 py-2 text-sm first:border-0"
+                                        :key="v.shift_id"
+                                        class="flex items-center justify-between gap-2 border-t border-gray-100 py-2 first:border-0"
                                     >
-                                        <span class="font-medium text-gray-800">{{ v.name }}</span>
-                                        <span v-if="v.contact" class="text-gray-500">{{ v.contact }}</span>
+                                        <div class="flex items-center gap-2 text-sm">
+                                            <span class="font-medium text-gray-800">{{ v.name }}</span>
+                                            <span v-if="v.contact" class="text-gray-500">{{ v.contact }}</span>
+                                        </div>
+                                        <button
+                                            class="rounded-lg px-2 py-1 text-xs font-medium text-red-600 transition hover:bg-red-50"
+                                            @click="removeVolunteer(v.shift_id)"
+                                        >
+                                            Fjern
+                                        </button>
                                     </div>
                                 </div>
                             </div>

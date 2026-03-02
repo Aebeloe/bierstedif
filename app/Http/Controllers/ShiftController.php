@@ -6,6 +6,7 @@ use App\Models\Setting;
 use App\Models\Shift;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 
 class ShiftController extends Controller
@@ -20,10 +21,7 @@ class ShiftController extends Controller
             ->orderBy('start_time')
             ->get();
 
-        // Group identical shifts (same name, description, start_time, end_time)
-        $grouped = $shifts->groupBy(fn (Shift $s) =>
-            $s->name.'|'.$s->description.'|'.$s->start_time->toIso8601String().'|'.$s->end_time->toIso8601String().'|'.$s->category
-        )->map(function ($group) {
+        $grouped = $shifts->groupBy(fn (Shift $s) => $s->group_id)->map(function ($group) {
             $first = $group->first();
             $unclaimed = $group->first(fn (Shift $s) => !$s->isClaimed());
             $claimedNames = $group->filter(fn (Shift $s) => $s->isClaimed())
@@ -71,18 +69,18 @@ class ShiftController extends Controller
     {
         $shifts = Shift::with('assignee')->orderBy('start_time')->get();
 
-        $grouped = $shifts->groupBy(fn (Shift $s) =>
-            $s->name.'|'.$s->description.'|'.$s->start_time->toIso8601String().'|'.$s->end_time->toIso8601String().'|'.$s->category
-        )->map(function ($group) {
+        $grouped = $shifts->groupBy(fn (Shift $s) => $s->group_id)->map(function ($group) {
             $first = $group->first();
 
             $volunteers = $group->filter(fn (Shift $s) => $s->isClaimed())
                 ->map(fn (Shift $s) => [
+                    'shift_id' => $s->id,
                     'name' => $s->volunteer_name ?? $s->assignee?->name,
                     'contact' => $s->volunteer_contact ?? '',
                 ])->filter(fn ($v) => $v['name'])->values();
 
             return [
+                'group_id' => $first->group_id,
                 'name' => $first->name,
                 'description' => $first->description,
                 'category' => $first->category,
@@ -110,6 +108,8 @@ class ShiftController extends Controller
             'category' => ['nullable', 'string', 'max:255'],
         ]);
 
+        $groupId = (string) Str::uuid();
+
         for ($i = 0; $i < $validated['quantity']; $i++) {
             Shift::create([
                 'name' => $validated['name'],
@@ -117,8 +117,35 @@ class ShiftController extends Controller
                 'category' => $validated['category'] ?? null,
                 'start_time' => $validated['start_time'],
                 'end_time' => $validated['end_time'],
+                'group_id' => $groupId,
             ]);
         }
+
+        return redirect()->back();
+    }
+
+    public function updateGroup(Request $request, string $groupId)
+    {
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'description' => ['nullable', 'string'],
+            'start_time' => ['required', 'date'],
+            'end_time' => ['required', 'date', 'after:start_time'],
+            'category' => ['nullable', 'string', 'max:255'],
+        ]);
+
+        Shift::where('group_id', $groupId)->update($validated);
+
+        return redirect()->back();
+    }
+
+    public function unclaim(Shift $shift)
+    {
+        $shift->update([
+            'user_id' => null,
+            'volunteer_name' => null,
+            'volunteer_contact' => null,
+        ]);
 
         return redirect()->back();
     }

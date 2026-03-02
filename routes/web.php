@@ -61,5 +61,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard/vagt-guide', fn () => inertia('VagtGuide'))->name('dashboard.vagt-guide');
     Route::post('/dashboard/toggle-mosefesten', [ShiftController::class, 'toggleMosefesten'])->name('dashboard.toggle-mosefesten');
     Route::post('/shifts', [ShiftController::class, 'store'])->name('shifts.store');
+    Route::put('/shifts/group/{groupId}', [ShiftController::class, 'updateGroup'])->name('shifts.update-group');
+    Route::delete('/shifts/{shift}/claim', [ShiftController::class, 'unclaim'])->name('shifts.unclaim');
     Route::delete('/shifts/{shift}', [ShiftController::class, 'destroy'])->name('shifts.destroy');
 });
