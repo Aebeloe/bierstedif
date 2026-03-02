@@ -62,6 +62,7 @@ const editForms = reactive<Record<string, {
     start_time: string;
     end_date: string;
     end_time: string;
+    add: number | null;
 }>>({});
 
 function parseDanishDate(date: string, time: string): string {
@@ -89,6 +90,7 @@ function startEditing(shift: Shift) {
         start_time: toTimeStr(shift.start_time),
         end_date: toDateStr(shift.end_time),
         end_time: toTimeStr(shift.end_time),
+        add: null,
     };
 }
 
@@ -107,6 +109,7 @@ function saveEdit(groupId: string) {
         category: ef.category || null,
         start_time: parseDanishDate(ef.start_date, ef.start_time),
         end_time: parseDanishDate(ef.end_date, ef.end_time),
+        add: ef.add || null,
     }, {
         preserveScroll: true,
         onSuccess: () => cancelEditing(groupId),
@@ -472,6 +475,21 @@ const calendarDays = computed<CalendarDay[]>(() => {
                                                     class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-bif-accent focus:outline-none focus:ring-1 focus:ring-bif-accent"
                                                 />
                                             </div>
+                                        </div>
+
+                                        <div class="flex items-center gap-3 pt-1">
+                                            <div class="flex items-center gap-2">
+                                                <label class="text-sm font-medium text-gray-700">Tilføj flere</label>
+                                                <input
+                                                    v-model.number="editForms[shift.group_id].add"
+                                                    type="number"
+                                                    min="1"
+                                                    max="50"
+                                                    placeholder="0"
+                                                    class="w-20 rounded-lg border border-gray-300 px-3 py-1.5 text-sm shadow-sm focus:border-bif-accent focus:outline-none focus:ring-1 focus:ring-bif-accent"
+                                                />
+                                            </div>
+                                            <span class="text-xs text-gray-400">{{ shift.total }} i gruppen nu</span>
                                         </div>
 
                                         <div class="flex items-center gap-2 pt-1">

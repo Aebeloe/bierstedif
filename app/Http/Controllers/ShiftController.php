@@ -132,9 +132,20 @@ class ShiftController extends Controller
             'start_time' => ['required', 'date'],
             'end_time' => ['required', 'date', 'after:start_time'],
             'category' => ['nullable', 'string', 'max:255'],
+            'add' => ['nullable', 'integer', 'min:1', 'max:50'],
         ]);
 
+        $add = $validated['add'] ?? 0;
+        unset($validated['add']);
+
         Shift::where('group_id', $groupId)->update($validated);
+
+        for ($i = 0; $i < $add; $i++) {
+            Shift::create([
+                ...$validated,
+                'group_id' => $groupId,
+            ]);
+        }
 
         return redirect()->back();
     }
