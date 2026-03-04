@@ -14,6 +14,7 @@ Route::get('/kalender', [PageController::class, 'kalender'])->name('kalender');
 Route::get('/kontakt', [PageController::class, 'kontakt'])->name('kontakt');
 Route::get('/klubdragt', [PageController::class, 'klubdragt'])->name('klubdragt');
 Route::get('/sponsorer', [PageController::class, 'sponsorer'])->name('sponsorer');
+Route::get('/dokumenter', [PageController::class, 'dokumenter'])->name('dokumenter');
 
 // Tilmeldinger
 Route::prefix('tilmeldinger')->name('tilmeldinger.')->group(function () {

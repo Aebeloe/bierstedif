@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import MainLayout from '@/layouts/MainLayout.vue';
 import PageHero from '@/components/PageHero.vue';
-import { Head } from '@inertiajs/vue3';
+import { Head, Link } from '@inertiajs/vue3';
 
 defineOptions({ layout: MainLayout });
 </script>
@@ -57,6 +57,16 @@ defineOptions({ layout: MainLayout });
                     Derudover arrangerer vi løbende kulturelle arrangementer, foredrag og sociale sammenkomster
                     gennem vores kulturudvalg.
                 </p>
+            </div>
+
+            <div class="rounded-xl bg-white p-6 shadow-md md:p-8">
+                <h2 class="text-xl font-bold">Dokumenter</h2>
+                <p class="mt-4 leading-relaxed text-bif-muted">
+                    Find referater fra bestyrelsesmøder og nyttige formularer her.
+                </p>
+                <Link href="/dokumenter" class="mt-4 inline-block font-medium text-bif-accent transition hover:underline">
+                    Se dokumenter &rarr;
+                </Link>
             </div>
         </div>
     </div>

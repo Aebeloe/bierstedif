@@ -55,6 +55,11 @@ class PageController extends Controller
         return Inertia::render('Klubdragt');
     }
 
+    public function dokumenter(): Response
+    {
+        return Inertia::render('Dokumenter');
+    }
+
     public function sponsorer(): Response
     {
         $dir = public_path('images-sponsorer');
