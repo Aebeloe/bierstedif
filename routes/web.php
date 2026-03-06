@@ -16,6 +16,9 @@ Route::get('/klubdragt', [PageController::class, 'klubdragt'])->name('klubdragt'
 Route::get('/sponsorer', [PageController::class, 'sponsorer'])->name('sponsorer');
 Route::get('/dokumenter', [PageController::class, 'dokumenter'])->name('dokumenter');
 
+// Redirects
+Route::redirect('/komglad', '/tilmeldinger/proevetraening');
+
 // Tilmeldinger
 Route::prefix('tilmeldinger')->name('tilmeldinger.')->group(function () {
     Route::get('/', [PageController::class, 'tilmeldingIndex'])->name('index');
