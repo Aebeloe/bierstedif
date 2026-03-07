@@ -1,9 +1,15 @@
 <script setup lang="ts">
 import MainLayout from '@/layouts/MainLayout.vue';
 import { Head, Link, usePage, router, useForm } from '@inertiajs/vue3';
-import { computed, reactive } from 'vue';
+import { computed, reactive, ref } from 'vue';
 
 defineOptions({ layout: MainLayout });
+
+// Tabs
+const activeTab = ref<'mosefest'>('mosefest');
+
+// Mosefest sub-sections
+const mosefestSection = ref<'vagter' | 'borde'>('vagter');
 
 interface User {
     id: number;
@@ -187,8 +193,8 @@ const calendarDays = computed<CalendarDay[]>(() => {
     <section class="px-4 py-16 md:py-24">
         <div class="mx-auto max-w-4xl space-y-8">
             <!-- Header -->
-            <div class="rounded-xl bg-white p-8 shadow-md">
-                <div class="flex items-center justify-between">
+            <div class="rounded-xl bg-white shadow-md">
+                <div class="flex items-center justify-between p-8 pb-0">
                     <h1 class="text-2xl font-bold">Velkommen, {{ user.name }}</h1>
                     <div class="flex items-center gap-2">
                         <Link
@@ -206,23 +212,61 @@ const calendarDays = computed<CalendarDay[]>(() => {
                     </div>
                 </div>
 
-                <div class="mt-4 flex items-center justify-between border-t border-gray-100 pt-4">
-                    <span class="text-sm font-medium text-gray-700">Mosefesten synlig for besøgende</span>
-                    <button
-                        class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-bif-accent focus:ring-offset-2"
-                        :class="props.mosefestenPublic ? 'bg-bif-accent' : 'bg-gray-200'"
-                        role="switch"
-                        :aria-checked="props.mosefestenPublic"
-                        @click="toggleMosefesten"
-                    >
-                        <span
-                            class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
-                            :class="props.mosefestenPublic ? 'translate-x-5' : 'translate-x-0'"
-                        />
-                    </button>
+                <!-- Tabs -->
+                <div class="mt-6 border-b border-gray-200 px-8">
+                    <nav class="-mb-px flex gap-6">
+                        <button
+                            class="border-b-2 pb-3 text-sm font-medium transition"
+                            :class="activeTab === 'mosefest' ? 'border-bif-accent text-bif-accent' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'"
+                            @click="activeTab = 'mosefest'"
+                        >
+                            Mosefest
+                        </button>
+                    </nav>
                 </div>
             </div>
 
+            <!-- Mosefest tab -->
+            <template v-if="activeTab === 'mosefest'">
+                <!-- Mosefest controls -->
+                <div class="rounded-xl bg-white p-8 shadow-md">
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm font-medium text-gray-700">Mosefesten synlig for besøgende</span>
+                        <button
+                            class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-bif-accent focus:ring-offset-2"
+                            :class="props.mosefestenPublic ? 'bg-bif-accent' : 'bg-gray-200'"
+                            role="switch"
+                            :aria-checked="props.mosefestenPublic"
+                            @click="toggleMosefesten"
+                        >
+                            <span
+                                class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
+                                :class="props.mosefestenPublic ? 'translate-x-5' : 'translate-x-0'"
+                            />
+                        </button>
+                    </div>
+
+                    <!-- Sub-section toggles -->
+                    <div class="mt-4 flex gap-2 border-t border-gray-100 pt-4">
+                        <button
+                            class="rounded-full px-4 py-1.5 text-sm font-medium transition"
+                            :class="mosefestSection === 'vagter' ? 'bg-bif-accent text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
+                            @click="mosefestSection = 'vagter'"
+                        >
+                            Vagter
+                        </button>
+                        <button
+                            class="rounded-full px-4 py-1.5 text-sm font-medium transition"
+                            :class="mosefestSection === 'borde' ? 'bg-bif-accent text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
+                            @click="mosefestSection = 'borde'"
+                        >
+                            Borde
+                        </button>
+                    </div>
+                </div>
+
+            <!-- Vagter section -->
+            <template v-if="mosefestSection === 'vagter'">
             <!-- Create Shift Form -->
             <div class="rounded-xl bg-white p-8 shadow-md">
                 <h2 class="text-xl font-bold">Opret vagter</h2>
@@ -341,7 +385,7 @@ const calendarDays = computed<CalendarDay[]>(() => {
                 </form>
             </div>
 
-            <!-- Shifts -->
+            <!-- Shifts list -->
             <div class="rounded-xl bg-white p-8 shadow-md">
                 <h2 class="text-xl font-bold">Vagter</h2>
 
@@ -534,6 +578,16 @@ const calendarDays = computed<CalendarDay[]>(() => {
                     </div>
                 </div>
             </div>
+            </template>
+
+            <!-- Borde section -->
+            <template v-if="mosefestSection === 'borde'">
+                <div class="rounded-xl bg-white p-8 shadow-md">
+                    <h2 class="text-xl font-bold">Borde</h2>
+                    <p class="mt-4 text-gray-500">Kommer snart.</p>
+                </div>
+            </template>
+            </template>
         </div>
     </section>
 </template>
