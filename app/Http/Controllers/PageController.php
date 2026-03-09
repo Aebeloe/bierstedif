@@ -2,33 +2,33 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Http;
+use Illuminate\Http\Response as HttpResponse;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class PageController extends Controller
 {
-    private const CONVENTUS_URLS = [
-        'Badminton' => 'https://www.conventus.dk/dataudv/www/holdoversigt_ny.php?foreningsid=2266&afdelingsid=8376&handelsbetingelser=1&reservationer=vis&skjul_nyt_medlem=0&skjul_allerede_medlem=0&raekkefoelge=alfabetisk&vis_adresse=0&knap_placering=horisontal&highlight=pris&start=periode;ledige_pladser&info=tid_sted;alder;betaling;tilmelding;tilmeld_aabner_om;ledere;om_holdet&sprog=da',
-        'Haandbold' => 'https://www.conventus.dk/dataudv/www/holdoversigt_ny.php?foreningsid=2266&afdelingsid=8378&handelsbetingelser=1&reservationer=vis&skjul_nyt_medlem=0&skjul_allerede_medlem=0&raekkefoelge=alfabetisk&vis_adresse=0&knap_placering=horisontal&highlight=pris&start=periode;ledige_pladser&info=tid_sted;alder;betaling;tilmelding;tilmeld_aabner_om;ledere;om_holdet&sprog=da',
-        'Fodbold' => 'https://www.conventus.dk/dataudv/www/holdoversigt_ny.php?foreningsid=2266&afdelingsid=8377&handelsbetingelser=1&reservationer=vis&skjul_nyt_medlem=0&skjul_allerede_medlem=0&raekkefoelge=alfabetisk&vis_adresse=0&knap_placering=horisontal&highlight=pris&start=periode;ledige_pladser&info=tid_sted;alder;betaling;tilmelding;tilmeld_aabner_om;ledere;om_holdet&sprog=da',
-        'Esport' => 'https://www.conventus.dk/dataudv/www/holdoversigt_ny.php?foreningsid=2266&afdelingsid=44611&handelsbetingelser=1&reservationer=vis&skjul_nyt_medlem=0&skjul_allerede_medlem=0&raekkefoelge=alfabetisk&vis_adresse=0&knap_placering=horisontal&highlight=pris&start=periode;ledige_pladser&info=tid_sted;alder;betaling;tilmelding;tilmeld_aabner_om;ledere;om_holdet&sprog=da',
-        'OevrigeHold' => 'https://www.conventus.dk/dataudv/www/holdoversigt_ny.php?foreningsid=2266&afdelingsid=61674&handelsbetingelser=1&reservationer=vis&skjul_nyt_medlem=0&skjul_allerede_medlem=0&raekkefoelge=alfabetisk&vis_adresse=0&knap_placering=horisontal&highlight=pris&start=periode;ledige_pladser&info=tid_sted;alder;betaling;tilmelding;tilmeld_aabner_om;ledere;om_holdet&sprog=da',
-        'Ungdomsklub' => 'https://www.conventus.dk/dataudv/www/holdoversigt_ny.php?foreningsid=2266&afdelingsid=13707&handelsbetingelser=1&reservationer=vis&skjul_nyt_medlem=0&skjul_allerede_medlem=0&raekkefoelge=alfabetisk&vis_adresse=0&knap_placering=horisontal&highlight=pris&start=periode;ledige_pladser&info=tid_sted;alder;betaling;tilmelding;tilmeld_aabner_om;ledere;om_holdet&sprog=da',
-        'Familiemedlemskab' => 'https://www.conventus.dk/dataudv/www/holdoversigt_ny.php?foreningsid=2266&afdelingsid=7323&handelsbetingelser=1&reservationer=vis&skjul_nyt_medlem=0&skjul_allerede_medlem=0&raekkefoelge=alfabetisk&vis_adresse=0&knap_placering=horisontal&highlight=pris&start=periode;ledige_pladser&info=tid_sted;alder;betaling;tilmelding;tilmeld_aabner_om;ledere;om_holdet&sprog=da',
-        'Gymnastik' => 'https://www.conventus.dk/dataudv/www/holdoversigt_ny.php?foreningsid=2266&afdelingsid=8379&handelsbetingelser=1&reservationer=vis&skjul_nyt_medlem=0&skjul_allerede_medlem=0&raekkefoelge=alfabetisk&vis_adresse=0&knap_placering=horisontal&highlight=pris&start=periode;ledige_pladser&info=tid_sted;alder;betaling;tilmelding;tilmeld_aabner_om;ledere;om_holdet&sprog=da',
-        'Floorball' => 'https://www.conventus.dk/dataudv/www/holdoversigt_ny.php?foreningsid=2266&afdelingsid=8379&handelsbetingelser=1&reservationer=vis&skjul_nyt_medlem=0&skjul_allerede_medlem=0&raekkefoelge=alfabetisk&vis_adresse=0&knap_placering=horisontal&highlight=pris&start=periode;ledige_pladser&info=tid_sted;alder;betaling;tilmelding;tilmeld_aabner_om;ledere;om_holdet&sprog=da',
-        'Dart' => 'https://www.conventus.dk/dataudv/www/holdoversigt_ny.php?foreningsid=2266&afdelingsid=61674&handelsbetingelser=1&reservationer=vis&skjul_nyt_medlem=0&skjul_allerede_medlem=0&raekkefoelge=alfabetisk&vis_adresse=0&knap_placering=horisontal&highlight=pris&start=periode;ledige_pladser&info=tid_sted;alder;betaling;tilmelding;tilmeld_aabner_om;ledere;om_holdet&sprog=da',
+    private const CONVENTUS_IFRAME_URLS = [
+        'Badminton' => 'https://www.conventus.dk/dataudv/www/holdoversigt_ny_iframe.php?foreningsid=2266&afdelingsid=8376&handelsbetingelser=1&reservationer=vis&skjul_nyt_medlem=0&skjul_allerede_medlem=0&raekkefoelge=alfabetisk&vis_adresse=0&knap_placering=horisontal&highlight=pris&start=periode;ledige_pladser&info=tid_sted;alder;betaling;tilmelding;tilmeld_aabner_om;ledere;om_holdet&sprog=auto',
+        'Haandbold' => 'https://www.conventus.dk/dataudv/www/holdoversigt_ny_iframe.php?foreningsid=2266&afdelingsid=8378&handelsbetingelser=1&reservationer=vis&skjul_nyt_medlem=0&skjul_allerede_medlem=0&raekkefoelge=alfabetisk&vis_adresse=0&knap_placering=horisontal&highlight=pris&start=periode;ledige_pladser&info=tid_sted;alder;betaling;tilmelding;tilmeld_aabner_om;ledere;om_holdet&sprog=auto',
+        'Fodbold' => 'https://www.conventus.dk/dataudv/www/holdoversigt_ny_iframe.php?foreningsid=2266&afdelingsid=8377&handelsbetingelser=1&reservationer=vis&skjul_nyt_medlem=0&skjul_allerede_medlem=0&raekkefoelge=alfabetisk&vis_adresse=0&knap_placering=horisontal&highlight=pris&start=periode;ledige_pladser&info=tid_sted;alder;betaling;tilmelding;tilmeld_aabner_om;ledere;om_holdet&sprog=auto',
+        'Esport' => 'https://www.conventus.dk/dataudv/www/holdoversigt_ny_iframe.php?foreningsid=2266&afdelingsid=44611&handelsbetingelser=1&reservationer=vis&skjul_nyt_medlem=0&skjul_allerede_medlem=0&raekkefoelge=alfabetisk&vis_adresse=0&knap_placering=horisontal&highlight=pris&start=periode;ledige_pladser&info=tid_sted;alder;betaling;tilmelding;tilmeld_aabner_om;ledere;om_holdet&sprog=auto',
+        'OevrigeHold' => 'https://www.conventus.dk/dataudv/www/holdoversigt_ny_iframe.php?foreningsid=2266&afdelingsid=61674&handelsbetingelser=1&reservationer=vis&skjul_nyt_medlem=0&skjul_allerede_medlem=0&raekkefoelge=alfabetisk&vis_adresse=0&knap_placering=horisontal&highlight=pris&start=periode;ledige_pladser&info=tid_sted;alder;betaling;tilmelding;tilmeld_aabner_om;ledere;om_holdet&sprog=auto',
+        'Ungdomsklub' => 'https://www.conventus.dk/dataudv/www/holdoversigt_ny_iframe.php?foreningsid=2266&afdelingsid=13707&handelsbetingelser=1&reservationer=vis&skjul_nyt_medlem=0&skjul_allerede_medlem=0&raekkefoelge=alfabetisk&vis_adresse=0&knap_placering=horisontal&highlight=pris&start=periode;ledige_pladser&info=tid_sted;alder;betaling;tilmelding;tilmeld_aabner_om;ledere;om_holdet&sprog=auto',
+        'Familiemedlemskab' => 'https://www.conventus.dk/dataudv/www/holdoversigt_ny_iframe.php?foreningsid=2266&afdelingsid=7323&handelsbetingelser=1&reservationer=vis&skjul_nyt_medlem=0&skjul_allerede_medlem=0&raekkefoelge=alfabetisk&vis_adresse=0&knap_placering=horisontal&highlight=pris&start=periode;ledige_pladser&info=tid_sted;alder;betaling;tilmelding;tilmeld_aabner_om;ledere;om_holdet&sprog=auto',
+        'Gymnastik' => 'https://www.conventus.dk/dataudv/www/holdoversigt_ny_iframe.php?foreningsid=2266&afdelingsid=8379&handelsbetingelser=1&reservationer=vis&skjul_nyt_medlem=0&skjul_allerede_medlem=0&raekkefoelge=alfabetisk&vis_adresse=0&knap_placering=horisontal&highlight=pris&start=periode;ledige_pladser&info=tid_sted;alder;betaling;tilmelding;tilmeld_aabner_om;ledere;om_holdet&sprog=auto',
+        'Floorball' => 'https://www.conventus.dk/dataudv/www/holdoversigt_ny_iframe.php?foreningsid=2266&afdelingsid=8379&handelsbetingelser=1&reservationer=vis&skjul_nyt_medlem=0&skjul_allerede_medlem=0&raekkefoelge=alfabetisk&vis_adresse=0&knap_placering=horisontal&highlight=pris&start=periode;ledige_pladser&info=tid_sted;alder;betaling;tilmelding;tilmeld_aabner_om;ledere;om_holdet&sprog=auto',
+        'Dart' => 'https://www.conventus.dk/dataudv/www/holdoversigt_ny_iframe.php?foreningsid=2266&afdelingsid=61674&handelsbetingelser=1&reservationer=vis&skjul_nyt_medlem=0&skjul_allerede_medlem=0&raekkefoelge=alfabetisk&vis_adresse=0&knap_placering=horisontal&highlight=pris&start=periode;ledige_pladser&info=tid_sted;alder;betaling;tilmelding;tilmeld_aabner_om;ledere;om_holdet&sprog=auto',
     ];
 
-    // Panel filters: 'exclude' removes panels matching the keyword, 'include' keeps only matching panels
+    // Panel heading filters: 'exclude' hides panels matching keyword, 'include' shows only matching panels
     private const CONVENTUS_FILTERS = [
         'Gymnastik' => ['exclude' => 'floorball'],
         'Floorball' => ['include' => 'floorball'],
         'OevrigeHold' => ['exclude' => 'dart'],
         'Dart' => ['include' => 'dart'],
     ];
+
 
     public function home(): Response
     {
@@ -88,133 +88,80 @@ class PageController extends Controller
         return Inertia::render('Sponsorer', ['sponsors' => $sponsors]);
     }
 
+    private function conventusEmbedUrl(string $page): string
+    {
+        return route('conventus-embed', $page);
+    }
+
     public function tilmelding(string $page): Response
     {
         $props = [];
 
-        if (isset(self::CONVENTUS_URLS[$page])) {
-            $filter = self::CONVENTUS_FILTERS[$page] ?? null;
-
-            $props['conventusHtml'] = Cache::remember(
-                "conventus_html_{$page}",
-                3600,
-                fn () => $this->fetchConventusHtml(self::CONVENTUS_URLS[$page], $filter)
-            );
+        if (isset(self::CONVENTUS_IFRAME_URLS[$page])) {
+            $props['conventusUrl'] = $this->conventusEmbedUrl($page);
         }
 
         return Inertia::render("Tilmeldinger/{$page}", $props);
     }
 
-    private function fetchConventusHtml(string $url, ?array $filter = null): string
-    {
-        $response = Http::get($url);
-
-        if (! $response->successful()) {
-            return '';
-        }
-
-        $body = $response->body();
-
-        // Extract all document.write('...' + '...' + '...') content
-        // Conventus uses string concatenation (e.g. 'ma'+'il'+'to:') to obfuscate emails
-        $prefix = "document.write('";
-        $start = strpos($body, $prefix);
-
-        if ($start === false) {
-            return '';
-        }
-
-        $start += strlen($prefix);
-        $len = strlen($body);
-        $parts = [];
-        $pos = $start;
-
-        while ($pos < $len) {
-            if ($body[$pos] === '\\') {
-                $pos += 2; // skip escaped character
-            } elseif ($body[$pos] === "'") {
-                // Capture this string segment
-                $parts[] = substr($body, $start, $pos - $start);
-                $pos++;
-
-                // Skip whitespace and check for '+' concatenation
-                while ($pos < $len && ctype_space($body[$pos])) {
-                    $pos++;
-                }
-
-                if ($pos < $len && $body[$pos] === '+') {
-                    $pos++;
-                    // Skip whitespace and opening quote of next segment
-                    while ($pos < $len && ctype_space($body[$pos])) {
-                        $pos++;
-                    }
-                    if ($pos < $len && $body[$pos] === "'") {
-                        $pos++;
-                        $start = $pos;
-                        continue;
-                    }
-                }
-
-                break; // End of document.write
-            } else {
-                $pos++;
-            }
-        }
-
-        $html = implode('', $parts);
-        $html = str_replace("\\'", "'", $html);
-
-        // Remove <script> tags (v-html won't execute them)
-        $html = preg_replace('/<script[^>]*>.*?<\/script>/s', '', $html);
-
-        // Remove "all: initial" resets that wipe out Conventus's own Bootstrap styling
-        $html = preg_replace('/\ball:\s*initial;\s*/', '', $html);
-
-        // Apply panel filtering if specified
-        if ($filter) {
-            // Split HTML at each panel boundary
-            $parts = preg_split('/(?=<div class="panel panel-default">)/', $html);
-            $preamble = $parts[0]; // styles, wrapper divs, etc.
-            $panels = array_slice($parts, 1);
-
-            // Match keyword against panel heading only (not body text)
-            $headingContains = function (string $panel, string $keyword): bool {
-                if (preg_match('/<div class="panel-heading">.*?<\/div>\s*<\/div>/s', $panel, $m)) {
-                    return stripos($m[0], $keyword) !== false;
-                }
-
-                return false;
-            };
-
-            if (isset($filter['exclude'])) {
-                $panels = array_filter($panels, fn ($p) => ! $headingContains($p, $filter['exclude']));
-            } elseif (isset($filter['include'])) {
-                $panels = array_filter($panels, fn ($p) => $headingContains($p, $filter['include']));
-            }
-
-            $html = $preamble . implode('', $panels);
-        }
-
-        return $html;
-    }
-
     public function tilmeldingIndex(): Response
     {
         $sections = [];
-
-        foreach (self::CONVENTUS_URLS as $page => $url) {
-            $filter = self::CONVENTUS_FILTERS[$page] ?? null;
-
-            $sections[$page] = Cache::remember(
-                "conventus_html_{$page}",
-                3600,
-                fn () => $this->fetchConventusHtml($url, $filter)
-            );
+        foreach (self::CONVENTUS_IFRAME_URLS as $page => $url) {
+            $sections[$page] = $this->conventusEmbedUrl($page);
         }
 
         return Inertia::render('Tilmeldinger/Index', [
             'sections' => $sections,
         ]);
+    }
+
+    public function conventusEmbed(string $page): HttpResponse
+    {
+        if (! isset(self::CONVENTUS_IFRAME_URLS[$page])) {
+            abort(404);
+        }
+
+        $scriptUrl = str_replace('holdoversigt_ny_iframe.php', 'holdoversigt_ny.php', self::CONVENTUS_IFRAME_URLS[$page]);
+        $filter = self::CONVENTUS_FILTERS[$page] ?? null;
+
+        $filterJs = '';
+        if ($filter) {
+            $mode = isset($filter['include']) ? 'include' : 'exclude';
+            $keyword = addslashes($filter[$mode]);
+            $filterJs = <<<JS
+            function applyFilter(){
+                var panels=document.querySelectorAll('.panel.panel-default');
+                panels.forEach(function(p){
+                    var heading=p.querySelector('.panel-heading');
+                    if(!heading)return;
+                    var text=heading.textContent.toLowerCase();
+                    var match=text.indexOf('{$keyword}')!==-1;
+                    p.style.display=('{$mode}'==='include'?match:!match)?'':'none';
+                });
+                notifyParent();
+            }
+            window.addEventListener('load',function(){setTimeout(applyFilter,300);setTimeout(applyFilter,1000);setTimeout(applyFilter,3000);});
+            new MutationObserver(applyFilter).observe(document.body,{childList:true,subtree:true});
+            JS;
+        }
+
+        $html = <<<HTML
+        <!DOCTYPE html>
+        <html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+        <body style="margin:0;padding:10px;">
+        <script src="{$scriptUrl}"></script>
+        <script>
+        function inv_dis(id){var el=document.getElementById(id);if(el){el.style.display=el.style.display==='none'?'':'none';notifyParent();}}
+        function notifyParent(){parent.postMessage({type:'conventus-resize',height:document.body.scrollHeight},'*');}
+        new ResizeObserver(notifyParent).observe(document.body);
+        window.addEventListener('load',function(){setTimeout(notifyParent,500);setTimeout(notifyParent,2000);});
+        {$filterJs}
+        </script>
+        </body></html>
+        HTML;
+
+        return new HttpResponse($html, 200, ['Content-Type' => 'text/html']);
     }
 
     public function udvalgPage(string $page): Response

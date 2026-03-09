@@ -16,6 +16,12 @@ Route::get('/klubdragt', [PageController::class, 'klubdragt'])->name('klubdragt'
 Route::get('/sponsorer', [PageController::class, 'sponsorer'])->name('sponsorer');
 Route::get('/dokumenter', [PageController::class, 'dokumenter'])->name('dokumenter');
 
+// Redirects
+Route::redirect('/komglad', '/tilmeldinger/proevetraening');
+
+// Conventus embed proxy (same-origin iframe for auto-resize)
+Route::get('/conventus-embed/{page}', [PageController::class, 'conventusEmbed'])->name('conventus-embed');
+
 // Tilmeldinger
 Route::prefix('tilmeldinger')->name('tilmeldinger.')->group(function () {
     Route::get('/', [PageController::class, 'tilmeldingIndex'])->name('index');
@@ -25,10 +31,11 @@ Route::prefix('tilmeldinger')->name('tilmeldinger.')->group(function () {
     Route::get('/gymnastik', fn () => app(PageController::class)->tilmelding('Gymnastik'))->name('gymnastik');
     Route::get('/haandbold', fn () => app(PageController::class)->tilmelding('Haandbold'))->name('haandbold');
     Route::get('/esport', fn () => app(PageController::class)->tilmelding('Esport'))->name('esport');
-    Route::get('/familiemedlemskab', fn () => app(PageController::class)->tilmelding('Familiemedlemskab'))->name('familiemedlemskab');
-    Route::get('/ungdomsklub', fn () => app(PageController::class)->tilmelding('Ungdomsklub'))->name('ungdomsklub');
     Route::get('/floorball', fn () => app(PageController::class)->tilmelding('Floorball'))->name('floorball');
     Route::get('/dart', fn () => app(PageController::class)->tilmelding('Dart'))->name('dart');
+    Route::get('/familiemedlemskab', fn () => app(PageController::class)->tilmelding('Familiemedlemskab'))->name('familiemedlemskab');
+    Route::get('/ungdomsklub', fn () => app(PageController::class)->tilmelding('Ungdomsklub'))->name('ungdomsklub');
+
     Route::get('/oevrige-hold', fn () => app(PageController::class)->tilmelding('OevrigeHold'))->name('oevrige-hold');
     Route::get('/mosefesten', [ShiftController::class, 'mosefestenIndex'])->name('mosefesten');
     Route::post('/mosefesten/{shift}/claim', [ShiftController::class, 'claim'])->name('mosefesten.claim')->middleware('throttle:10,1');
