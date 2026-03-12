@@ -1,9 +1,25 @@
 <script setup lang="ts">
 import MainLayout from '@/layouts/MainLayout.vue';
 import PageHero from '@/components/PageHero.vue';
-import { Head } from '@inertiajs/vue3';
+import { Head, usePage } from '@inertiajs/vue3';
+import { computed, ref, onMounted, onBeforeUnmount } from 'vue';
 
 defineOptions({ layout: MainLayout });
+
+const page = usePage();
+const isLoggedIn = computed(() => !!page.props.auth?.user);
+const showTickets = computed(() => isLoggedIn.value || new Date() >= new Date('2026-03-17'));
+
+const iframeHeight = ref(400);
+
+function onMessage(e: MessageEvent) {
+    if (e.data?.type === 'conventus-resize-billet' && typeof e.data.height === 'number') {
+        iframeHeight.value = e.data.height;
+    }
+}
+
+onMounted(() => window.addEventListener('message', onMessage));
+onBeforeUnmount(() => window.removeEventListener('message', onMessage));
 </script>
 
 <template>
@@ -12,6 +28,17 @@ defineOptions({ layout: MainLayout });
 
     <div class="px-4 py-12 md:py-16">
         <div class="mx-auto max-w-3xl">
+            <!-- Ticket sales -->
+            <div v-if="showTickets" class="mb-8 rounded-xl bg-white p-6 shadow-md md:p-8">
+                <h2 class="mb-4 text-xl font-bold">Billetter</h2>
+                <iframe
+                    src="/conventus-embed-billet/mosefesten"
+                    :style="{ height: iframeHeight + 'px', overflow: 'hidden' }"
+                    scrolling="no"
+                    class="w-full border-0 bg-white"
+                />
+            </div>
+
             <div class="rounded-xl bg-white p-6 shadow-md md:p-8">
                 <h2 class="text-xl font-bold">Om Mosefesten</h2>
                 <p class="mt-4 leading-relaxed text-bif-muted">

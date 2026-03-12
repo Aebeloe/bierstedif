@@ -164,6 +164,26 @@ class PageController extends Controller
         return new HttpResponse($html, 200, ['Content-Type' => 'text/html']);
     }
 
+    public function mosefestenBilletEmbed(): HttpResponse
+    {
+        $scriptUrl = 'https://www.conventus.dk/dataudv/www/billetserie.php?foreningsid=2266&billetserie=20194&boks=1&eks_profil=1&ny_profil=1&width=600';
+
+        $html = <<<HTML
+        <!DOCTYPE html>
+        <html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+        <body style="margin:0;padding:10px;">
+        <script src="{$scriptUrl}"></script>
+        <script>
+        function notifyParent(){parent.postMessage({type:'conventus-resize-billet',height:document.body.scrollHeight},'*');}
+        new ResizeObserver(notifyParent).observe(document.body);
+        window.addEventListener('load',function(){setTimeout(notifyParent,500);setTimeout(notifyParent,2000);});
+        </script>
+        </body></html>
+        HTML;
+
+        return new HttpResponse($html, 200, ['Content-Type' => 'text/html']);
+    }
+
     public function udvalgPage(string $page): Response
     {
         return Inertia::render("Udvalg/{$page}");

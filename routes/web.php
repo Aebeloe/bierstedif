@@ -18,9 +18,11 @@ Route::get('/dokumenter', [PageController::class, 'dokumenter'])->name('dokument
 
 // Redirects
 Route::redirect('/komglad', '/tilmeldinger/proevetraening');
+Route::redirect('/mosefesten', '/udvalg/mosefesten');
 
 // Conventus embed proxy (same-origin iframe for auto-resize)
 Route::get('/conventus-embed/{page}', [PageController::class, 'conventusEmbed'])->name('conventus-embed');
+Route::get('/conventus-embed-billet/mosefesten', [PageController::class, 'mosefestenBilletEmbed'])->name('conventus-embed-billet-mosefesten');
 
 // Tilmeldinger
 Route::prefix('tilmeldinger')->name('tilmeldinger.')->group(function () {
