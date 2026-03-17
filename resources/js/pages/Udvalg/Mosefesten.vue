@@ -33,9 +33,8 @@ onBeforeUnmount(() => window.removeEventListener('message', onMessage));
                 <h2 class="mb-4 text-xl font-bold">Billetter</h2>
                 <iframe
                     src="/conventus-embed-billet/mosefesten"
-                    :style="{ height: iframeHeight + 'px', overflow: 'hidden' }"
-                    scrolling="no"
-                    class="w-full border-0 bg-white"
+                    :style="{ height: iframeHeight + 'px' }"
+                    class="w-full max-w-full border-0 bg-white"
                 />
             </div>
 

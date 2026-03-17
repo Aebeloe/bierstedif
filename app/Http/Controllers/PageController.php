@@ -166,12 +166,14 @@ class PageController extends Controller
 
     public function mosefestenBilletEmbed(): HttpResponse
     {
-        $scriptUrl = 'https://www.conventus.dk/dataudv/www/billetserie.php?foreningsid=2266&billetserie=20194&boks=1&eks_profil=1&ny_profil=1&width=600';
+        $scriptUrl = 'https://www.conventus.dk/dataudv/www/billetserie.php?foreningsid=2266&billetserie=20194&boks=1&eks_profil=1&ny_profil=1';
 
         $html = <<<HTML
         <!DOCTYPE html>
-        <html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
-        <body style="margin:0;padding:10px;">
+        <html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+        <style>body{margin:0;padding:10px;overflow-x:auto;max-width:100vw;box-sizing:border-box}table,img,div{max-width:100%!important}table{width:100%!important}</style>
+        </head>
+        <body>
         <script src="{$scriptUrl}"></script>
         <script>
         function notifyParent(){parent.postMessage({type:'conventus-resize-billet',height:document.body.scrollHeight},'*');}
