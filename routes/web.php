@@ -55,6 +55,8 @@ Route::prefix('udvalg')->name('udvalg.')->group(function () {
     Route::get('/mosefesten', fn () => app(PageController::class)->udvalgPage('Mosefesten'))->name('mosefesten');
 });
 
+Route::get('/moseloebet', fn () => app(PageController::class)->udvalgPage('Moselobet'))->name('moselobet');
+
 // Auth
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');

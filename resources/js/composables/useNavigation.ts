@@ -52,6 +52,7 @@ export function useNavigation(): ComputedRef<NavItem[]> {
                     { label: 'Login', href: '/tilmeldinger/login' },
                 ],
             },
+            { label: 'Moseløbet', href: '/moseloebet' },
             { label: 'Om Foreningen', href: '/om-foreningen' },
             { label: 'Kalender', href: '/kalender' },
             { label: 'Kontakt', href: '/kontakt' },
