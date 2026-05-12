@@ -29,7 +29,7 @@ defineOptions({ layout: MainLayout });
                 </p>
                 <div class="mt-4">
                     <a
-                        href="/Moseløbskontrakt 2019.pdf"
+                        href="/Moselobskontrakt-2024.pdf"
                         download
                         class="inline-block rounded-lg bg-bif-accent px-6 py-3 font-semibold text-white transition hover:opacity-90"
                     >
