@@ -19,7 +19,7 @@ defineOptions({ layout: MainLayout });
                     deltage i Moseløbet. Løbet bliver skudt i gang Grundlovsdag den 5. juni kl. 16:00 med start fra hallen.
                 </p>
                 <p class="mt-4 leading-relaxed text-bif-muted">
-                    Der bliver mulighed for at løbe 5 eller 10 kilometer. Ruterne kan ses på Biersted Idrætsforenings hjemmeside.
+                    Der bliver mulighed for at løbe, gå eller cykle 5 eller 10 kilometer. Ruterne kan ses på Biersted Idrætsforenings hjemmeside.
                 </p>
                 <p class="mt-4 leading-relaxed text-bif-muted">
                     På fodboldbanerne ved hallen bliver det muligt at deltage i et 'sponsorløb' for hele familien.
@@ -27,6 +27,15 @@ defineOptions({ layout: MainLayout });
                     På Biersted IF's hjemmeside kan man udskrive en kontrakt, som skal udfyldes og afleveres ved
                     tidtagerbordet inden man løber.
                 </p>
+                <div class="mt-4">
+                    <a
+                        href="/Moseløbskontrakt 2019.pdf"
+                        download
+                        class="inline-block rounded-lg bg-bif-accent px-6 py-3 font-semibold text-white transition hover:opacity-90"
+                    >
+                        Download sponsorkontrakt
+                    </a>
+                </div>
                 <p class="mt-4 leading-relaxed text-bif-muted">
                     Al overskud fra motionsløbet og sponsorløbet går til byens børn og unge. Få masser af motion
                     sammen med en masse andre gode mennesker i Biersted — samtidig med, at vi løber penge ind til byens børn.
