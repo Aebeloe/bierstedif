@@ -33,6 +33,17 @@ defineOptions({ layout: MainLayout });
                     />
                 </div>
             </section>
+
+            <section>
+                <h2 class="mb-4 text-2xl font-bold text-bif-dark">Dokumenter</h2>
+                <div class="overflow-hidden rounded-xl bg-white shadow-md">
+                    <iframe
+                        src="https://drive.google.com/embeddedfolderview?id=1QsM8uXzMuLrNknWN6KxMbVKTXexe018G#list"
+                        class="h-[600px] w-full border-0"
+                        title="Dokumenter"
+                    />
+                </div>
+            </section>
         </div>
     </div>
 </template>
