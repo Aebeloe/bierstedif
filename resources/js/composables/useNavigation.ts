@@ -24,7 +24,6 @@ export function useNavigation(): ComputedRef<NavItem[]> {
                 label: 'Udvalg',
                 href: '#',
                 children: [
-                    { label: 'Moseløbet', href: '/udvalg/moselobet' },
                     { label: 'Biersted Nyt', href: '/udvalg/biersted-nyt' },
                     { label: 'TUEN', href: '/udvalg/tuen' },
                     { label: 'Eventudvalget', href: '/udvalg/eventudvalget' },
@@ -53,7 +52,6 @@ export function useNavigation(): ComputedRef<NavItem[]> {
                 ],
             },
             { label: 'Mosefesten', href: '/mosefesten' },
-            { label: 'Moseløbet', href: '/moseloebet' },
             { label: 'Om Foreningen', href: '/om-foreningen' },
             { label: 'Kalender', href: '/kalender' },
             { label: 'Kontakt', href: '/kontakt' },
