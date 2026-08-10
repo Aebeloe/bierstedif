@@ -29,7 +29,6 @@ export function useNavigation(): ComputedRef<NavItem[]> {
                     { label: 'Eventudvalget', href: '/udvalg/eventudvalget' },
                     { label: 'Hjælperbank', href: '/udvalg/hjaelperbank' },
                     { label: 'Booking', href: '/udvalg/booking' },
-                    { label: 'Mosefesten', href: '/udvalg/mosefesten' },
                 ],
             },
             {
@@ -51,7 +50,6 @@ export function useNavigation(): ComputedRef<NavItem[]> {
                     { label: 'Login', href: '/tilmeldinger/login' },
                 ],
             },
-            { label: 'Mosefesten', href: '/mosefesten' },
             { label: 'Om Foreningen', href: '/om-foreningen' },
             { label: 'Kalender', href: '/kalender' },
             { label: 'Kontakt', href: '/kontakt' },
