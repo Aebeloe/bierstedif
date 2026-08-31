@@ -1,4 +1,3 @@
-import { usePage } from '@inertiajs/vue3';
 import { computed, type ComputedRef } from 'vue';
 
 export interface NavChild {
@@ -14,11 +13,7 @@ export interface NavItem {
 }
 
 export function useNavigation(): ComputedRef<NavItem[]> {
-    const page = usePage<{ mosefestenVisible: boolean }>();
-
     return computed(() => {
-        const mosefestenVisible = page.props.mosefestenVisible;
-
         return [
             {
                 label: 'Udvalg',
@@ -46,7 +41,6 @@ export function useNavigation(): ComputedRef<NavItem[]> {
                     { label: 'Familiemedlemskab', href: '/tilmeldinger/familiemedlemskab' },
                     { label: 'Ungdomsklub', href: '/tilmeldinger/ungdomsklub' },
                     { label: 'Øvrige Hold', href: '/tilmeldinger/oevrige-hold' },
-                    ...(mosefestenVisible ? [{ label: 'Mosefesten', href: '/tilmeldinger/mosefesten' }] : []),
                     { label: 'Login', href: '/tilmeldinger/login' },
                 ],
             },
