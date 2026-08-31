@@ -53,7 +53,7 @@ export function useNavigation(): ComputedRef<NavItem[]> {
             { label: 'Om Foreningen', href: '/om-foreningen' },
             { label: 'Kalender', href: '/kalender' },
             { label: 'Kontakt', href: '/kontakt' },
-            { label: 'Klubdragt', href: '/klubdragt' },
+            { label: 'Webshop', href: '/klubdragt' },
             { label: 'Sponsorer', href: '/sponsorer' },
         ];
     });

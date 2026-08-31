@@ -8,8 +8,8 @@ defineOptions({ layout: MainLayout });
 </script>
 
 <template>
-    <Head title="Klubdragt" />
-    <PageHero title="Klubdragt" subtitle="Bestil klubdragt, spillerdragt mm. hos Biersted IF's tøjleverandør" />
+    <Head title="Webshop" />
+    <PageHero title="Webshop" subtitle="Bestil klubdragt, spillerdragt mm. hos Biersted IF's tøjleverandør" />
 
     <div class="px-4 py-12 md:py-16">
         <div class="mx-auto max-w-3xl">
@@ -20,7 +20,7 @@ defineOptions({ layout: MainLayout });
                 </div>
 
                 <p class="mt-4 leading-relaxed text-bif-muted">
-                    Biersted IF's klubdragt og spillerdragter kan bestilles online hos vores tøjleverandør Sport Direct.
+                    Biersted IF's klubdragt og spillerdragter kan bestilles online hos vores tøjleverandør A-Sport.
                     Som medlem får du alle overdele med klublogo.
                 </p>
 
