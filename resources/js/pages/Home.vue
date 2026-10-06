@@ -27,7 +27,11 @@ const quickCards = [
                 Tilmeld dig et hold
             </Link>
             <Link href="/om-foreningen" class="rounded-lg border border-white/30 px-6 py-3 font-medium text-white transition hover:bg-white/10">
-                Læs mere om os
+                <span class="md:hidden">Om Foreningen</span>
+                <span class="hidden md:inline">Læs mere om os</span>
+            </Link>
+            <Link href="/kontakt" class="rounded-lg border border-white/30 px-6 py-3 font-medium text-white transition hover:bg-white/10">
+                Aktiviteter
             </Link>
         </div>
     </section>
