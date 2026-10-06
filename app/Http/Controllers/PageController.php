@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Calendar\CalendarEvent;
+use App\Calendar\CalendarService;
 use Illuminate\Http\Response as HttpResponse;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -40,9 +42,11 @@ class PageController extends Controller
         return Inertia::render('OmForeningen');
     }
 
-    public function kalender(): Response
+    public function kalender(CalendarService $calendar): Response
     {
-        return Inertia::render('Kalender');
+        return Inertia::render('Kalender', [
+            'events' => $calendar->upcoming()->map(fn (CalendarEvent $event) => $event->toArray())->all(),
+        ]);
     }
 
     public function kontakt(): Response
