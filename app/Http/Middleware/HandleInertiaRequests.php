@@ -42,6 +42,7 @@ class HandleInertiaRequests extends Middleware
                 'user' => $request->user() ? $request->user()->only('id', 'name', 'email') : null,
             ],
             'mosefestenVisible' => $request->user() !== null || Setting::get('mosefesten_public', '0') === '1',
+            'julehopVisible' => $request->user() !== null || Setting::get('julehop_public', '0') === '1',
         ];
     }
 }

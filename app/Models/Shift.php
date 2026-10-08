@@ -7,7 +7,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Shift extends Model
 {
+    public const EVENTS = ['mosefesten', 'julehop'];
+
     protected $fillable = [
+        'event',
         'name',
         'description',
         'start_time',

@@ -5,11 +5,23 @@ import { computed, reactive, ref } from 'vue';
 
 defineOptions({ layout: MainLayout });
 
-// Tabs
-const activeTab = ref<'mosefest'>('mosefest');
+type EventKey = 'mosefesten' | 'julehop';
 
-// Mosefest sub-sections
-const mosefestSection = ref<'vagter' | 'borde'>('vagter');
+const events: { key: EventKey; label: string; publicUrl: string }[] = [
+    { key: 'mosefesten', label: 'Mosefest', publicUrl: '/tilmeldinger/mosefesten' },
+    { key: 'julehop', label: 'Julehop', publicUrl: '/tilmeldinger/julehop' },
+];
+
+const activeTab = ref<EventKey>('mosefesten');
+const activeEvent = computed(() => events.find((e) => e.key === activeTab.value)!);
+
+// Borde only exists for Mosefesten
+const section = ref<'vagter' | 'borde'>('vagter');
+
+function selectTab(key: EventKey) {
+    activeTab.value = key;
+    section.value = 'vagter';
+}
 
 interface User {
     id: number;
@@ -25,6 +37,7 @@ interface Volunteer {
 
 interface Shift {
     group_id: string;
+    event: EventKey;
     name: string;
     description: string | null;
     category: string | null;
@@ -38,7 +51,7 @@ interface Shift {
 }
 
 const props = defineProps<{
-    mosefestenPublic: boolean;
+    publicEvents: Record<EventKey, boolean>;
 }>();
 
 const page = usePage<{
@@ -129,6 +142,7 @@ function removeVolunteer(shiftId: number) {
 
 function createShifts() {
     form.transform((data) => ({
+        event: activeTab.value,
         name: data.name,
         description: data.description,
         category: data.category || null,
@@ -143,8 +157,8 @@ function deleteShiftGroup(ids: number[]) {
     ids.forEach((id) => router.delete(`/shifts/${id}`, { preserveScroll: true }));
 }
 
-function toggleMosefesten() {
-    router.post('/dashboard/toggle-mosefesten');
+function toggleVisibility() {
+    router.post(`/dashboard/toggle-visibility/${activeTab.value}`, {}, { preserveScroll: true });
 }
 
 function logout() {
@@ -173,9 +187,11 @@ interface CalendarDay {
     shifts: Shift[];
 }
 
+const eventShifts = computed(() => page.props.shifts.filter((s) => s.event === activeTab.value));
+
 const calendarDays = computed<CalendarDay[]>(() => {
     const grouped = new Map<string, Shift[]>();
-    for (const shift of page.props.shifts) {
+    for (const shift of eventShifts.value) {
         const key = dateKey(shift.start_time);
         if (!grouped.has(key)) grouped.set(key, []);
         grouped.get(key)!.push(shift);
@@ -216,57 +232,60 @@ const calendarDays = computed<CalendarDay[]>(() => {
                 <div class="mt-6 border-b border-gray-200 px-8">
                     <nav class="-mb-px flex gap-6">
                         <button
+                            v-for="event in events"
+                            :key="event.key"
                             class="border-b-2 pb-3 text-sm font-medium transition"
-                            :class="activeTab === 'mosefest' ? 'border-bif-accent text-bif-accent' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'"
-                            @click="activeTab = 'mosefest'"
+                            :class="activeTab === event.key ? 'border-bif-accent text-bif-accent' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'"
+                            @click="selectTab(event.key)"
                         >
-                            Mosefest
+                            {{ event.label }}
                         </button>
                     </nav>
                 </div>
             </div>
 
-            <!-- Mosefest tab -->
-            <template v-if="activeTab === 'mosefest'">
-                <!-- Mosefest controls -->
-                <div class="rounded-xl bg-white p-8 shadow-md">
-                    <div class="flex items-center justify-between">
-                        <span class="text-sm font-medium text-gray-700">Mosefesten synlig for besøgende</span>
-                        <button
-                            class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-bif-accent focus:ring-offset-2"
-                            :class="props.mosefestenPublic ? 'bg-bif-accent' : 'bg-gray-200'"
-                            role="switch"
-                            :aria-checked="props.mosefestenPublic"
-                            @click="toggleMosefesten"
-                        >
-                            <span
-                                class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
-                                :class="props.mosefestenPublic ? 'translate-x-5' : 'translate-x-0'"
-                            />
-                        </button>
+            <!-- Event controls -->
+            <div class="rounded-xl bg-white p-8 shadow-md">
+                <div class="flex items-center justify-between gap-4">
+                    <div>
+                        <span class="text-sm font-medium text-gray-700">{{ activeEvent.label }} synlig for besøgende</span>
+                        <Link :href="activeEvent.publicUrl" class="ml-2 text-xs text-bif-accent hover:underline">Se tilmeldingssiden</Link>
                     </div>
-
-                    <!-- Sub-section toggles -->
-                    <div class="mt-4 flex gap-2 border-t border-gray-100 pt-4">
-                        <button
-                            class="rounded-full px-4 py-1.5 text-sm font-medium transition"
-                            :class="mosefestSection === 'vagter' ? 'bg-bif-accent text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
-                            @click="mosefestSection = 'vagter'"
-                        >
-                            Vagter
-                        </button>
-                        <button
-                            class="rounded-full px-4 py-1.5 text-sm font-medium transition"
-                            :class="mosefestSection === 'borde' ? 'bg-bif-accent text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
-                            @click="mosefestSection = 'borde'"
-                        >
-                            Borde
-                        </button>
-                    </div>
+                    <button
+                        class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-bif-accent focus:ring-offset-2"
+                        :class="props.publicEvents[activeTab] ? 'bg-bif-accent' : 'bg-gray-200'"
+                        role="switch"
+                        :aria-checked="props.publicEvents[activeTab]"
+                        @click="toggleVisibility"
+                    >
+                        <span
+                            class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
+                            :class="props.publicEvents[activeTab] ? 'translate-x-5' : 'translate-x-0'"
+                        />
+                    </button>
                 </div>
 
+                <!-- Sub-section toggles -->
+                <div v-if="activeTab === 'mosefesten'" class="mt-4 flex gap-2 border-t border-gray-100 pt-4">
+                    <button
+                        class="rounded-full px-4 py-1.5 text-sm font-medium transition"
+                        :class="section === 'vagter' ? 'bg-bif-accent text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
+                        @click="section = 'vagter'"
+                    >
+                        Vagter
+                    </button>
+                    <button
+                        class="rounded-full px-4 py-1.5 text-sm font-medium transition"
+                        :class="section === 'borde' ? 'bg-bif-accent text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
+                        @click="section = 'borde'"
+                    >
+                        Borde
+                    </button>
+                </div>
+            </div>
+
             <!-- Vagter section -->
-            <template v-if="mosefestSection === 'vagter'">
+            <template v-if="section === 'vagter'">
             <!-- Create Shift Form -->
             <div class="rounded-xl bg-white p-8 shadow-md">
                 <h2 class="text-xl font-bold">Opret vagter</h2>
@@ -389,7 +408,7 @@ const calendarDays = computed<CalendarDay[]>(() => {
             <div class="rounded-xl bg-white p-8 shadow-md">
                 <h2 class="text-xl font-bold">Vagter</h2>
 
-                <div v-if="page.props.shifts.length === 0" class="mt-4 text-gray-500">
+                <div v-if="eventShifts.length === 0" class="mt-4 text-gray-500">
                     Ingen vagter oprettet endnu.
                 </div>
 
@@ -581,12 +600,11 @@ const calendarDays = computed<CalendarDay[]>(() => {
             </template>
 
             <!-- Borde section -->
-            <template v-if="mosefestSection === 'borde'">
+            <template v-if="section === 'borde'">
                 <div class="rounded-xl bg-white p-8 shadow-md">
                     <h2 class="text-xl font-bold">Borde</h2>
                     <p class="mt-4 text-gray-500">Kommer snart.</p>
                 </div>
-            </template>
             </template>
         </div>
     </section>

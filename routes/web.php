@@ -3,7 +3,6 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ShiftController;
-use App\Models\Setting;
 use App\Models\Shift;
 use Illuminate\Support\Facades\Route;
 
@@ -39,8 +38,10 @@ Route::prefix('tilmeldinger')->name('tilmeldinger.')->group(function () {
     Route::get('/ungdomsklub', fn () => app(PageController::class)->tilmelding('Ungdomsklub'))->name('ungdomsklub');
 
     Route::get('/oevrige-hold', fn () => app(PageController::class)->tilmelding('OevrigeHold'))->name('oevrige-hold');
-    Route::get('/mosefesten', [ShiftController::class, 'mosefestenIndex'])->name('mosefesten');
+    Route::get('/mosefesten', fn () => app(ShiftController::class)->publicIndex('mosefesten', 'Tilmeldinger/Mosefesten'))->name('mosefesten');
     Route::post('/mosefesten/{shift}/claim', [ShiftController::class, 'claim'])->name('mosefesten.claim')->middleware('throttle:10,1');
+    Route::get('/julehop', fn () => app(ShiftController::class)->publicIndex('julehop', 'Tilmeldinger/Julehop'))->name('julehop');
+    Route::post('/julehop/{shift}/claim', [ShiftController::class, 'claim'])->name('julehop.claim')->middleware('throttle:10,1');
     Route::get('/login', fn () => inertia('Tilmeldinger/Login'))->name('conventus-login');
 });
 
@@ -67,11 +68,11 @@ Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('/dashboard', fn () => inertia('Dashboard', [
         'shifts' => app(ShiftController::class)->dashboardShifts(),
-        'mosefestenPublic' => Setting::get('mosefesten_public', '0') === '1',
+        'publicEvents' => collect(Shift::EVENTS)->mapWithKeys(fn ($e) => [$e => ShiftController::isPublic($e)]),
     ]))->name('dashboard');
 
     Route::get('/dashboard/vagt-guide', fn () => inertia('VagtGuide'))->name('dashboard.vagt-guide');
-    Route::post('/dashboard/toggle-mosefesten', [ShiftController::class, 'toggleMosefesten'])->name('dashboard.toggle-mosefesten');
+    Route::post('/dashboard/toggle-visibility/{event}', [ShiftController::class, 'toggleVisibility'])->name('dashboard.toggle-visibility');
     Route::post('/shifts', [ShiftController::class, 'store'])->name('shifts.store');
     Route::put('/shifts/group/{groupId}', [ShiftController::class, 'updateGroup'])->name('shifts.update-group');
     Route::delete('/shifts/{shift}/claim', [ShiftController::class, 'unclaim'])->name('shifts.unclaim');

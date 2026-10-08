@@ -7,23 +7,30 @@ use App\Models\Shift;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 
 class ShiftController extends Controller
 {
-    public function mosefestenIndex()
+    public static function isPublic(string $event): bool
     {
-        if (! Auth::check() && Setting::get('mosefesten_public', '0') !== '1') {
+        return Setting::get("{$event}_public", '0') === '1';
+    }
+
+    public function publicIndex(string $event, string $component)
+    {
+        if (! Auth::check() && ! self::isPublic($event)) {
             abort(404);
         }
 
-        $shifts = Shift::where('start_time', '>=', now()->startOfDay())
+        $shifts = Shift::where('event', $event)
+            ->where('start_time', '>=', now()->startOfDay())
             ->orderBy('start_time')
             ->get();
 
         $grouped = $shifts->groupBy(fn (Shift $s) => $s->group_id)->map(function ($group) {
             $first = $group->first();
-            $unclaimed = $group->first(fn (Shift $s) => !$s->isClaimed());
+            $unclaimed = $group->first(fn (Shift $s) => ! $s->isClaimed());
             $claimedNames = $group->filter(fn (Shift $s) => $s->isClaimed())
                 ->map(fn (Shift $s) => $s->volunteer_name
                     ? explode(' ', $s->volunteer_name)[0]
@@ -39,12 +46,12 @@ class ShiftController extends Controller
                 'end_time' => $first->end_time->toIso8601String(),
                 'total' => $group->count(),
                 'claimed' => $group->filter(fn (Shift $s) => $s->isClaimed())->count(),
-                'available' => $group->filter(fn (Shift $s) => !$s->isClaimed())->count(),
+                'available' => $group->filter(fn (Shift $s) => ! $s->isClaimed())->count(),
                 'claimed_names' => $claimedNames,
             ];
         })->filter(fn ($group) => $group['available'] > 0)->values();
 
-        return Inertia::render('Tilmeldinger/Mosefesten', [
+        return Inertia::render($component, [
             'shifts' => $grouped,
         ]);
     }
@@ -81,6 +88,7 @@ class ShiftController extends Controller
 
             return [
                 'group_id' => $first->group_id,
+                'event' => $first->event,
                 'name' => $first->name,
                 'description' => $first->description,
                 'category' => $first->category,
@@ -100,6 +108,7 @@ class ShiftController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
+            'event' => ['required', Rule::in(Shift::EVENTS)],
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
             'start_time' => ['required', 'date'],
@@ -112,6 +121,7 @@ class ShiftController extends Controller
 
         for ($i = 0; $i < $validated['quantity']; $i++) {
             Shift::create([
+                'event' => $validated['event'],
                 'name' => $validated['name'],
                 'description' => $validated['description'] ?? null,
                 'category' => $validated['category'] ?? null,
@@ -161,10 +171,11 @@ class ShiftController extends Controller
         return redirect()->back();
     }
 
-    public function toggleMosefesten()
+    public function toggleVisibility(string $event)
     {
-        $current = Setting::get('mosefesten_public', '0');
-        Setting::set('mosefesten_public', $current === '1' ? '0' : '1');
+        abort_unless(in_array($event, Shift::EVENTS, true), 404);
+
+        Setting::set("{$event}_public", self::isPublic($event) ? '0' : '1');
 
         return redirect()->back();
     }
