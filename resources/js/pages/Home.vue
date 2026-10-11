@@ -1,15 +1,19 @@
 <script setup lang="ts">
 import MainLayout from '@/layouts/MainLayout.vue';
+import ResponsiveImage from '@/components/ResponsiveImage.vue';
 import { Link, Head } from '@inertiajs/vue3';
 import { Calendar, Dumbbell, Info, Users } from 'lucide-vue-next';
 
 defineOptions({ layout: MainLayout });
 
+const cardWidths = [480, 960, 1440];
+const cardSizes = '(min-width: 1024px) 240px, (min-width: 640px) 50vw, 100vw';
+
 const quickCards = [
-    { title: 'Kalender', description: 'Se kommende begivenheder og aktiviteter', href: '/kalender', icon: Calendar, bg: '/kalender.jpg' },
-    { title: 'Prøvetræning', description: 'Prøv en gratis træning i en af vores afdelinger', href: '/tilmeldinger/proevetraening', icon: Dumbbell, bg: '/prøvetræning.jpg' },
-    { title: 'Om Foreningen', description: 'Læs om Biersted IF og vores historie', href: '/om-foreningen', icon: Info, bg: '/omforeningen.jpg' },
-    { title: 'Aktiviteter', description: 'Se alle vores sports- og fritidsaktiviteter', href: '/kontakt', icon: Users, bg: '/aktiviteter.jpg' },
+    { title: 'Kalender', description: 'Se kommende begivenheder og aktiviteter', href: '/kalender', icon: Calendar, bg: '/kalender.jpg', name: 'kalender' },
+    { title: 'Prøvetræning', description: 'Prøv en gratis træning i en af vores afdelinger', href: '/tilmeldinger/proevetraening', icon: Dumbbell, bg: '/prøvetræning.jpg', name: 'proevetraening' },
+    { title: 'Om Foreningen', description: 'Læs om Biersted IF og vores historie', href: '/om-foreningen', icon: Info, bg: '/omforeningen.jpg', name: 'omforeningen' },
+    { title: 'Aktiviteter', description: 'Se alle vores sports- og fritidsaktiviteter', href: '/kontakt', icon: Users, bg: '/aktiviteter.jpg', name: 'aktiviteter' },
 ];
 </script>
 
@@ -18,19 +22,19 @@ const quickCards = [
 
     <!-- Hero -->
     <section class="bg-bif-header">
-        <img src="/cover.png" alt="" class="w-full" />
-        <div class="flex items-center justify-center gap-4 px-4 py-6">
-            <Link href="/tilmeldinger/proevetraening" class="rounded-lg bg-bif-accent px-6 py-3 font-medium text-white transition hover:bg-bif-accent-dark">
+        <img src="/cover.png" alt="" class="h-[102px] w-full object-cover sm:h-auto" />
+        <div class="grid grid-cols-2 gap-3 px-4 py-6 sm:flex sm:flex-wrap sm:items-center sm:justify-center sm:gap-4">
+            <Link href="/tilmeldinger/proevetraening" class="flex items-center justify-center rounded-lg bg-bif-accent px-4 py-3 text-center text-sm font-medium text-white transition hover:bg-bif-accent-dark sm:px-6 sm:text-base">
                 Prøv en gratis træning
             </Link>
-            <Link href="/tilmeldinger" class="rounded-lg border border-bif-accent px-6 py-3 font-medium text-white transition hover:bg-bif-accent/10">
+            <Link href="/tilmeldinger" class="flex items-center justify-center rounded-lg border border-bif-accent px-4 py-3 text-center text-sm font-medium text-white transition hover:bg-bif-accent/10 sm:px-6 sm:text-base">
                 Tilmeld dig et hold
             </Link>
-            <Link href="/om-foreningen" class="rounded-lg border border-white/30 px-6 py-3 font-medium text-white transition hover:bg-white/10">
+            <Link href="/om-foreningen" class="flex items-center justify-center rounded-lg border border-white/30 px-4 py-3 text-center text-sm font-medium text-white transition hover:bg-white/10 sm:px-6 sm:text-base">
                 <span class="md:hidden">Om Foreningen</span>
                 <span class="hidden md:inline">Læs mere om os</span>
             </Link>
-            <Link href="/kontakt" class="rounded-lg border border-white/30 px-6 py-3 font-medium text-white transition hover:bg-white/10">
+            <Link href="/kontakt" class="flex items-center justify-center rounded-lg border border-white/30 px-4 py-3 text-center text-sm font-medium text-white transition hover:bg-white/10 sm:px-6 sm:text-base">
                 Aktiviteter
             </Link>
         </div>
@@ -42,7 +46,7 @@ const quickCards = [
             <div class="overflow-hidden rounded-xl bg-white shadow-md md:flex">
                 <div class="flex items-center justify-center bg-bif-accent/10 p-6 md:w-1/3 md:p-8">
                     <div class="mx-auto h-48 w-48 overflow-hidden rounded-full bg-bif-accent/20 md:h-56 md:w-56">
-                        <img src="/velkomstvaert.jpeg" alt="René Diget" class="h-full w-full object-cover" loading="eager" />
+                        <ResponsiveImage src="/velkomstvaert.jpeg" name="velkomstvaert" :widths="[480, 960]" sizes="224px" alt="René Diget" class="h-full w-full object-cover" loading="eager" />
                     </div>
                 </div>
                 <div class="p-6 md:w-2/3 md:p-8">
@@ -78,7 +82,7 @@ const quickCards = [
                     :href="card.href"
                     class="group relative overflow-hidden rounded-xl p-6 shadow-md transition hover:-translate-y-1 hover:shadow-lg"
                 >
-                    <img :src="card.bg" :alt="card.title" class="absolute inset-0 h-full w-full object-cover" />
+                    <ResponsiveImage :src="card.bg" :name="card.name" :widths="cardWidths" :sizes="cardSizes" :alt="card.title" class="absolute inset-0 h-full w-full object-cover" />
                     <div class="absolute inset-0 bg-black/50 transition group-hover:bg-black/40"></div>
                     <div class="relative">
                         <component :is="card.icon" class="h-8 w-8 text-white transition group-hover:scale-110" />

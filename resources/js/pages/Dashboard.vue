@@ -210,7 +210,7 @@ const calendarDays = computed<CalendarDay[]>(() => {
         <div class="mx-auto max-w-4xl space-y-8">
             <!-- Header -->
             <div class="rounded-xl bg-white shadow-md">
-                <div class="flex items-center justify-between p-8 pb-0">
+                <div class="flex flex-wrap items-center justify-between gap-4 p-6 pb-0 md:p-8 md:pb-0">
                     <h1 class="text-2xl font-bold">Velkommen, {{ user.name }}</h1>
                     <div class="flex items-center gap-2">
                         <Link
@@ -229,12 +229,12 @@ const calendarDays = computed<CalendarDay[]>(() => {
                 </div>
 
                 <!-- Tabs -->
-                <div class="mt-6 border-b border-gray-200 px-8">
-                    <nav class="-mb-px flex gap-6">
+                <div class="mt-6 border-b border-gray-200 px-6 md:px-8">
+                    <nav class="-mb-px flex gap-6 overflow-x-auto">
                         <button
                             v-for="event in events"
                             :key="event.key"
-                            class="border-b-2 pb-3 text-sm font-medium transition"
+                            class="shrink-0 whitespace-nowrap border-b-2 pb-3 text-sm font-medium transition"
                             :class="activeTab === event.key ? 'border-bif-accent text-bif-accent' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'"
                             @click="selectTab(event.key)"
                         >
@@ -245,7 +245,7 @@ const calendarDays = computed<CalendarDay[]>(() => {
             </div>
 
             <!-- Event controls -->
-            <div class="rounded-xl bg-white p-8 shadow-md">
+            <div class="rounded-xl bg-white p-6 shadow-md md:p-8">
                 <div class="flex items-center justify-between gap-4">
                     <div>
                         <span class="text-sm font-medium text-gray-700">{{ activeEvent.label }} synlig for besøgende</span>
@@ -287,7 +287,7 @@ const calendarDays = computed<CalendarDay[]>(() => {
             <!-- Vagter section -->
             <template v-if="section === 'vagter'">
             <!-- Create Shift Form -->
-            <div class="rounded-xl bg-white p-8 shadow-md">
+            <div class="rounded-xl bg-white p-6 shadow-md md:p-8">
                 <h2 class="text-xl font-bold">Opret vagter</h2>
 
                 <form class="mt-6 space-y-4" @submit.prevent="createShifts">
@@ -405,7 +405,7 @@ const calendarDays = computed<CalendarDay[]>(() => {
             </div>
 
             <!-- Shifts list -->
-            <div class="rounded-xl bg-white p-8 shadow-md">
+            <div class="rounded-xl bg-white p-6 shadow-md md:p-8">
                 <h2 class="text-xl font-bold">Vagter</h2>
 
                 <div v-if="eventShifts.length === 0" class="mt-4 text-gray-500">
@@ -474,7 +474,7 @@ const calendarDays = computed<CalendarDay[]>(() => {
                                                     v-model="editForms[shift.group_id].name"
                                                     type="text"
                                                     required
-                                                    class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-bif-accent focus:outline-none focus:ring-1 focus:ring-bif-accent"
+                                                    class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-base shadow-sm sm:text-sm focus:border-bif-accent focus:outline-none focus:ring-1 focus:ring-bif-accent"
                                                 />
                                             </div>
                                             <div>
@@ -483,7 +483,7 @@ const calendarDays = computed<CalendarDay[]>(() => {
                                                     v-model="editForms[shift.group_id].category"
                                                     type="text"
                                                     placeholder="F.eks. Bar, Scene..."
-                                                    class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-bif-accent focus:outline-none focus:ring-1 focus:ring-bif-accent"
+                                                    class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-base shadow-sm sm:text-sm focus:border-bif-accent focus:outline-none focus:ring-1 focus:ring-bif-accent"
                                                 />
                                             </div>
                                         </div>
@@ -493,7 +493,7 @@ const calendarDays = computed<CalendarDay[]>(() => {
                                             <textarea
                                                 v-model="editForms[shift.group_id].description"
                                                 rows="2"
-                                                class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-bif-accent focus:outline-none focus:ring-1 focus:ring-bif-accent"
+                                                class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-base shadow-sm sm:text-sm focus:border-bif-accent focus:outline-none focus:ring-1 focus:ring-bif-accent"
                                             />
                                         </div>
 
@@ -506,7 +506,7 @@ const calendarDays = computed<CalendarDay[]>(() => {
                                                     placeholder="dd/mm/åååå"
                                                     pattern="\d{1,2}/\d{1,2}/\d{4}"
                                                     required
-                                                    class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-bif-accent focus:outline-none focus:ring-1 focus:ring-bif-accent"
+                                                    class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-base shadow-sm sm:text-sm focus:border-bif-accent focus:outline-none focus:ring-1 focus:ring-bif-accent"
                                                 />
                                             </div>
                                             <div>
@@ -515,7 +515,7 @@ const calendarDays = computed<CalendarDay[]>(() => {
                                                     v-model="editForms[shift.group_id].start_time"
                                                     type="time"
                                                     required
-                                                    class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-bif-accent focus:outline-none focus:ring-1 focus:ring-bif-accent"
+                                                    class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-base shadow-sm sm:text-sm focus:border-bif-accent focus:outline-none focus:ring-1 focus:ring-bif-accent"
                                                 />
                                             </div>
                                             <div>
@@ -526,7 +526,7 @@ const calendarDays = computed<CalendarDay[]>(() => {
                                                     placeholder="dd/mm/åååå"
                                                     pattern="\d{1,2}/\d{1,2}/\d{4}"
                                                     required
-                                                    class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-bif-accent focus:outline-none focus:ring-1 focus:ring-bif-accent"
+                                                    class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-base shadow-sm sm:text-sm focus:border-bif-accent focus:outline-none focus:ring-1 focus:ring-bif-accent"
                                                 />
                                             </div>
                                             <div>
@@ -535,7 +535,7 @@ const calendarDays = computed<CalendarDay[]>(() => {
                                                     v-model="editForms[shift.group_id].end_time"
                                                     type="time"
                                                     required
-                                                    class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-bif-accent focus:outline-none focus:ring-1 focus:ring-bif-accent"
+                                                    class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-base shadow-sm sm:text-sm focus:border-bif-accent focus:outline-none focus:ring-1 focus:ring-bif-accent"
                                                 />
                                             </div>
                                         </div>
@@ -549,7 +549,7 @@ const calendarDays = computed<CalendarDay[]>(() => {
                                                     min="1"
                                                     max="50"
                                                     placeholder="0"
-                                                    class="w-20 rounded-lg border border-gray-300 px-3 py-1.5 text-sm shadow-sm focus:border-bif-accent focus:outline-none focus:ring-1 focus:ring-bif-accent"
+                                                    class="w-20 rounded-lg border border-gray-300 px-3 py-1.5 text-base shadow-sm sm:text-sm focus:border-bif-accent focus:outline-none focus:ring-1 focus:ring-bif-accent"
                                                 />
                                             </div>
                                             <span class="text-xs text-gray-400">{{ shift.total }} i gruppen nu</span>
@@ -601,7 +601,7 @@ const calendarDays = computed<CalendarDay[]>(() => {
 
             <!-- Borde section -->
             <template v-if="section === 'borde'">
-                <div class="rounded-xl bg-white p-8 shadow-md">
+                <div class="rounded-xl bg-white p-6 shadow-md md:p-8">
                     <h2 class="text-xl font-bold">Borde</h2>
                     <p class="mt-4 text-gray-500">Kommer snart.</p>
                 </div>

@@ -158,7 +158,7 @@ const showDateInRows = computed(() => currentFilter.value?.type === 'category');
                             </div>
 
                             <!-- Right: action button -->
-                            <div class="shrink-0 pt-1">
+                            <div class="hidden shrink-0 pt-1 sm:block">
                                 <button
                                     v-if="shift.available > 0"
                                     class="rounded-full bg-green-700 px-5 py-1.5 text-sm font-medium text-white transition hover:bg-green-800"
@@ -187,9 +187,10 @@ const showDateInRows = computed(() => currentFilter.value?.type === 'category');
                                         :id="'name-' + shift.id"
                                         v-model="claimForm.volunteer_name"
                                         type="text"
+                                        autocomplete="name"
                                         required
                                         placeholder="Dit fulde navn"
-                                        class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-green-600 focus:outline-none focus:ring-1 focus:ring-green-600"
+                                        class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-base shadow-sm sm:text-sm focus:border-green-600 focus:outline-none focus:ring-1 focus:ring-green-600"
                                     />
                                     <p v-if="claimForm.errors.volunteer_name" class="mt-1 text-xs text-red-600">{{ claimForm.errors.volunteer_name }}</p>
                                 </div>
@@ -198,10 +199,12 @@ const showDateInRows = computed(() => currentFilter.value?.type === 'category');
                                     <input
                                         :id="'contact-' + shift.id"
                                         v-model="claimForm.volunteer_contact"
-                                        type="text"
+                                        type="tel"
+                                        inputmode="tel"
+                                        autocomplete="tel"
                                         required
                                         placeholder="Tlf."
-                                        class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-green-600 focus:outline-none focus:ring-1 focus:ring-green-600"
+                                        class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-base shadow-sm sm:text-sm focus:border-green-600 focus:outline-none focus:ring-1 focus:ring-green-600"
                                     />
                                     <p v-if="claimForm.errors.volunteer_contact" class="mt-1 text-xs text-red-600">{{ claimForm.errors.volunteer_contact }}</p>
                                 </div>

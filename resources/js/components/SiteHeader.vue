@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, watch, onMounted, onUnmounted } from 'vue';
 import { Link } from '@inertiajs/vue3';
 import { Facebook, Instagram, Ghost, Menu, X, ChevronDown, ChevronUp } from 'lucide-vue-next';
 import { useNavigation } from '@/composables/useNavigation';
@@ -29,13 +29,20 @@ function closeMobileMenu() {
     mobileExpanded.value = null;
 }
 
+watch(mobileMenuOpen, (open) => {
+    document.body.style.overflow = open ? 'hidden' : '';
+});
+
 onMounted(() => window.addEventListener('click', closeDropdown));
-onUnmounted(() => window.removeEventListener('click', closeDropdown));
+onUnmounted(() => {
+    window.removeEventListener('click', closeDropdown);
+    document.body.style.overflow = '';
+});
 </script>
 
 <template>
-    <!-- Top bar -->
-    <div class="bg-bif-header text-white">
+    <!-- Top bar (desktop) -->
+    <div class="hidden bg-bif-header text-white lg:block">
         <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-2">
             <div class="flex items-center gap-4">
                 <a href="https://www.facebook.com/bierstedif" target="_blank" rel="noopener" class="transition hover:text-bif-accent">
@@ -117,12 +124,23 @@ onUnmounted(() => window.removeEventListener('click', closeDropdown));
         </div>
     </nav>
 
-    <!-- Mobile hamburger button -->
-    <div class="flex items-center justify-between border-b border-gray-200 bg-bif-header px-4 py-3 lg:hidden">
-        <Link href="/" class="text-lg font-bold text-white">Biersted IF</Link>
-        <button @click="mobileMenuOpen = true" class="text-white">
-            <Menu class="h-6 w-6" />
-        </button>
+    <!-- Mobile bar -->
+    <div class="flex items-center justify-between border-b border-gray-200 bg-bif-header px-4 py-2 text-white lg:hidden">
+        <Link href="/" class="text-xl font-bold tracking-wide">Biersted IF</Link>
+        <div class="flex items-center gap-1">
+            <a href="https://www.facebook.com/bierstedif" target="_blank" rel="noopener" class="p-2 transition hover:text-bif-accent">
+                <Facebook class="h-5 w-5" />
+            </a>
+            <a href="https://www.instagram.com/bierstedif/" target="_blank" rel="noopener" class="p-2 transition hover:text-bif-accent">
+                <Instagram class="h-5 w-5" />
+            </a>
+            <a href="https://www.snapchat.com/@bierstedif?share_id=UyrTUIG6uO8&locale=da-DK" target="_blank" rel="noopener" class="p-2 transition hover:text-bif-accent">
+                <Ghost class="h-5 w-5" />
+            </a>
+            <button @click="mobileMenuOpen = true" aria-label="Åbn menu" class="-mr-2 p-2">
+                <Menu class="h-6 w-6" />
+            </button>
+        </div>
     </div>
 
     <!-- Mobile menu overlay -->
@@ -138,7 +156,7 @@ onUnmounted(() => window.removeEventListener('click', closeDropdown));
             <div v-if="mobileMenuOpen" class="fixed inset-0 z-50 flex flex-col overflow-y-auto bg-bif-header text-white">
                 <div class="flex items-center justify-between px-4 py-4">
                     <Link href="/" class="text-xl font-bold" @click="closeMobileMenu">Biersted IF</Link>
-                    <button @click="closeMobileMenu">
+                    <button @click="closeMobileMenu" aria-label="Luk menu" class="-mr-2 p-2">
                         <X class="h-6 w-6" />
                     </button>
                 </div>

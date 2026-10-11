@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import MainLayout from '@/layouts/MainLayout.vue';
 import PageHero from '@/components/PageHero.vue';
+import ResponsiveImage from '@/components/ResponsiveImage.vue';
 import { Head } from '@inertiajs/vue3';
 import { Shirt, ExternalLink } from 'lucide-vue-next';
 
@@ -36,7 +37,7 @@ defineOptions({ layout: MainLayout });
                 </p>
 
                 <div class="mt-6 overflow-hidden rounded-lg">
-                    <img src="/klubdragt.png" alt="Biersted IF Klubdragt" class="mx-auto max-w-xs object-cover" />
+                    <ResponsiveImage src="/klubdragt.png" name="klubdragt" :widths="[480, 676]" sizes="320px" alt="Biersted IF Klubdragt" class="mx-auto max-w-xs object-cover" />
                 </div>
 
                 <a

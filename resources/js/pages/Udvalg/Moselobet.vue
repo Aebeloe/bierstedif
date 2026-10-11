@@ -8,7 +8,7 @@ defineOptions({ layout: MainLayout });
 
 <template>
     <Head title="Moseløbet" />
-    <PageHero title="Moseløbet" subtitle="Det årlige motionsløb i Biersted" bg="/moseloebheader.jpg" />
+    <PageHero title="Moseløbet" subtitle="Det årlige motionsløb i Biersted" bg="/moseloebheader.jpg" bg-name="moseloebheader" :bg-widths="[480, 720]" />
 
     <div class="px-4 py-12 md:py-16">
         <div class="mx-auto max-w-3xl space-y-6">

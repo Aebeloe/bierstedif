@@ -24,7 +24,7 @@ onBeforeUnmount(() => window.removeEventListener('message', onMessage));
 
 <template>
     <Head title="Mosefesten" />
-    <PageHero title="Mosefesten" subtitle="Årlig byfest i Biersted" bg="/mosefestheader.jpeg" :bgContain="true" />
+    <PageHero title="Mosefesten" subtitle="Årlig byfest i Biersted" bg="/mosefestheader.jpeg" bg-name="mosefestheader" :bg-widths="[480, 960, 1170]" :bgContain="true" />
 
     <div class="px-4 py-12 md:py-16">
         <div class="mx-auto max-w-3xl">

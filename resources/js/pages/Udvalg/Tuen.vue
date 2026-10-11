@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import MainLayout from '@/layouts/MainLayout.vue';
 import PageHero from '@/components/PageHero.vue';
+import ResponsiveImage from '@/components/ResponsiveImage.vue';
 import { Head } from '@inertiajs/vue3';
 import { Building2, Users, Palette } from 'lucide-vue-next';
 
@@ -9,7 +10,7 @@ defineOptions({ layout: MainLayout });
 
 <template>
     <Head title="TUEN" />
-    <PageHero title="TUEN" subtitle="Udviklingsprojekt for kultur- og sportsfaciliteter i Biersted" bg="/tuenheader.jpg" bg-position="center 70%" />
+    <PageHero title="TUEN" subtitle="Udviklingsprojekt for kultur- og sportsfaciliteter i Biersted" bg="/tuenheader.jpg" bg-name="tuenheader" :bg-widths="[480, 960]" bg-position="center 70%" />
 
     <div class="px-4 py-12 md:py-16">
         <div class="mx-auto max-w-3xl space-y-8">
@@ -34,10 +35,10 @@ defineOptions({ layout: MainLayout });
             </div>
 
             <div class="space-y-4">
-                <img src="/tuen1.png" alt="Det Sansemotoriske Hus - interiør" class="rounded-xl shadow-md w-full" />
+                <ResponsiveImage src="/tuen1.png" name="tuen1" :widths="[480, 960, 1024]" sizes="(min-width: 768px) 768px, 100vw" alt="Det Sansemotoriske Hus - interiør" class="rounded-xl shadow-md w-full" />
                 <div class="grid grid-cols-2 gap-4">
-                    <img src="/tuen2.jpg" alt="Det Sansemotoriske Hus - plantegning" class="rounded-xl shadow-md object-cover w-full h-56" />
-                    <img src="/tuen3.png" alt="Det Sansemotoriske Hus - overblik" class="rounded-xl shadow-md object-cover w-full h-56" />
+                    <ResponsiveImage src="/tuen2.jpg" name="tuen2" :widths="[480, 960, 1024]" sizes="(min-width: 768px) 384px, 50vw" alt="Det Sansemotoriske Hus - plantegning" class="rounded-xl shadow-md object-cover w-full h-56" />
+                    <ResponsiveImage src="/tuen3.png" name="tuen3" :widths="[480, 960, 1024]" sizes="(min-width: 768px) 384px, 50vw" alt="Det Sansemotoriske Hus - overblik" class="rounded-xl shadow-md object-cover w-full h-56" />
                 </div>
             </div>
 
@@ -55,7 +56,7 @@ defineOptions({ layout: MainLayout });
                         Omtale fra Vores Jammerbugt
                     </p>
                 </div>
-                <img src="/tuengeneral.jpg" alt="Generalprøve på indvielsen" class="w-full" />
+                <ResponsiveImage src="/tuengeneral.jpg" name="tuengeneral" :widths="[480, 624]" sizes="(min-width: 768px) 768px, 100vw" alt="Generalprøve på indvielsen" class="w-full" />
             </div>
 
             <div class="rounded-xl bg-white p-6 shadow-md md:p-8">

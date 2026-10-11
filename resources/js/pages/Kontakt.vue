@@ -2,7 +2,7 @@
 import MainLayout from '@/layouts/MainLayout.vue';
 import PageHero from '@/components/PageHero.vue';
 import { Head } from '@inertiajs/vue3';
-import { MapPin, Phone, Mail, Building, CreditCard } from 'lucide-vue-next';
+import { MapPin, Phone, Mail, Building, ExternalLink } from 'lucide-vue-next';
 
 defineOptions({ layout: MainLayout });
 </script>
@@ -62,14 +62,25 @@ defineOptions({ layout: MainLayout });
         </div>
     </div>
 
-    <div class="hidden px-4 pb-12 md:block md:pb-16">
+    <div class="px-4 pb-12 md:pb-16">
         <div class="mx-auto max-w-6xl">
             <div class="rounded-xl bg-white p-6 shadow-md">
                 <h2 class="mb-4 text-xl font-bold">Bestyrelse & Udvalg</h2>
                 <iframe
                     src="https://docs.google.com/spreadsheets/u/1/d/e/2PACX-1vRdEcz8fbW46QPjzq1m90FrojEHhqMoLb8YnpVjPt-i5f9Gmk6cJta3OJc-dwz4NEDlcPcwKkGiJkmM/pubhtml?widget=true&headers=false"
-                    class="h-[4000px] w-full rounded-lg border-0"
+                    class="hidden h-[4000px] w-full rounded-lg border-0 md:block"
                 />
+                <div class="md:hidden">
+                    <p class="text-bif-muted">Oversigten over bestyrelse og udvalg vises bedst på en større skærm.</p>
+                    <a
+                        href="https://docs.google.com/spreadsheets/u/1/d/e/2PACX-1vRdEcz8fbW46QPjzq1m90FrojEHhqMoLb8YnpVjPt-i5f9Gmk6cJta3OJc-dwz4NEDlcPcwKkGiJkmM/pubhtml"
+                        target="_blank"
+                        rel="noopener"
+                        class="mt-4 inline-flex items-center gap-2 rounded-lg bg-bif-accent px-5 py-2.5 text-sm font-medium text-white transition hover:bg-bif-accent-dark"
+                    >
+                        <ExternalLink class="h-4 w-4" /> Åbn oversigten
+                    </a>
+                </div>
             </div>
         </div>
     </div>

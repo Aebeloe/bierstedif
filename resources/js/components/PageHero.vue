@@ -1,8 +1,12 @@
 <script setup lang="ts">
+import ResponsiveImage from '@/components/ResponsiveImage.vue';
+
 const props = withDefaults(defineProps<{
     title: string;
     subtitle?: string;
     bg?: string;
+    bgName?: string;
+    bgWidths?: number[];
     bgPosition?: string;
     bgContain?: boolean;
 }>(), {
@@ -13,7 +17,18 @@ const props = withDefaults(defineProps<{
 
 <template>
     <div class="relative bg-bif-header px-4 py-12 text-white md:py-16">
-        <img v-if="bg" :src="bg" :alt="title" class="absolute inset-0 h-full w-full" :class="bgContain ? 'object-contain' : 'object-cover'" :style="{ objectPosition: props.bgPosition }" />
+        <ResponsiveImage
+            v-if="bg && bgName && bgWidths"
+            :src="bg"
+            :name="bgName"
+            :widths="bgWidths"
+            :alt="title"
+            loading="eager"
+            class="absolute inset-0 h-full w-full"
+            :class="bgContain ? 'object-contain' : 'object-cover'"
+            :style="{ objectPosition: props.bgPosition }"
+        />
+        <img v-else-if="bg" :src="bg" :alt="title" class="absolute inset-0 h-full w-full" :class="bgContain ? 'object-contain' : 'object-cover'" :style="{ objectPosition: props.bgPosition }" />
         <div v-if="bg" class="absolute inset-0 bg-black/50"></div>
         <div class="relative mx-auto max-w-5xl">
             <h1 class="text-2xl font-bold md:text-4xl">{{ title }}</h1>

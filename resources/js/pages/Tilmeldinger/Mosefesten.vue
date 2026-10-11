@@ -12,7 +12,7 @@ const props = defineProps<{ shifts: PublicShift[] }>();
 
 <template>
     <Head title="Mosefesten - Vagttilmelding" />
-    <PageHero title="Mosefesten" subtitle="Tilmeld dig som frivillig" bg="/mosefestheader.jpeg" :bgContain="true" />
+    <PageHero title="Mosefesten" subtitle="Tilmeld dig som frivillig" bg="/mosefestheader.jpeg" bg-name="mosefestheader" :bg-widths="[480, 960, 1170]" :bgContain="true" />
 
     <ShiftSignup :shifts="props.shifts" claim-url="/tilmeldinger/mosefesten" footer="Uden frivillige, ingen Mosefest">
         Mosefesten er byens fælles fest, og som frivillig er du med til at skabe nogle gode dage for

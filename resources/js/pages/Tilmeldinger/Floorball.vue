@@ -11,7 +11,7 @@ const props = defineProps<{ conventusUrl?: string }>();
 
 <template>
     <Head title="Floorball" />
-    <PageHero title="Floorball" subtitle="Tilmelding til floorball i Biersted IF" bg="/floorballheader.jpg" bg-position="center 45%" />
+    <PageHero title="Floorball" subtitle="Tilmelding til floorball i Biersted IF" bg="/floorballheader.jpg" bg-name="floorballheader" :bg-widths="[480, 960, 1024]" bg-position="center 45%" />
 
     <div class="px-4 py-12 md:py-16">
         <div class="mx-auto max-w-3xl">

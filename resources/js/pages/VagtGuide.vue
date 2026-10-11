@@ -10,8 +10,8 @@ defineOptions({ layout: MainLayout });
 
     <section class="px-4 py-16 md:py-24">
         <div class="mx-auto max-w-3xl space-y-8">
-            <div class="rounded-xl bg-white p-8 shadow-md">
-                <div class="flex items-center justify-between">
+            <div class="rounded-xl bg-white p-6 shadow-md md:p-8">
+                <div class="flex flex-wrap items-center justify-between gap-4">
                     <h1 class="text-2xl font-bold">Vagtsystemet</h1>
                     <Link
                         href="/dashboard"
@@ -27,7 +27,7 @@ defineOptions({ layout: MainLayout });
             </div>
 
             <!-- Opret vagter -->
-            <div class="rounded-xl bg-white p-8 shadow-md">
+            <div class="rounded-xl bg-white p-6 shadow-md md:p-8">
                 <h2 class="text-xl font-bold">Opret vagter</h2>
                 <p class="mt-4 leading-relaxed text-gray-600">
                     Under <Link href="/dashboard" class="font-medium text-bif-accent hover:underline">Dashboard</Link> kan du oprette vagter med følgende felter:
@@ -57,7 +57,7 @@ defineOptions({ layout: MainLayout });
             </div>
 
             <!-- Tilmeldingssiden -->
-            <div class="rounded-xl bg-white p-8 shadow-md">
+            <div class="rounded-xl bg-white p-6 shadow-md md:p-8">
                 <h2 class="text-xl font-bold">Tilmeldingssiden</h2>
                 <p class="mt-4 leading-relaxed text-gray-600">
                     Besøgende kan tilmelde sig vagter på <Link href="/tilmeldinger/mosefesten" class="font-medium text-bif-accent hover:underline">tilmeldingssiden</Link>. Siden viser vagter filtreret via faneblade &ndash; enten efter <strong class="text-gray-800">ugedag</strong> eller <strong class="text-gray-800">kategori</strong>. Frivillige skriver deres navn og telefonnummer for at tilmelde sig en ledig plads.
@@ -65,7 +65,7 @@ defineOptions({ layout: MainLayout });
             </div>
 
             <!-- Synlighed -->
-            <div class="rounded-xl bg-white p-8 shadow-md">
+            <div class="rounded-xl bg-white p-6 shadow-md md:p-8">
                 <h2 class="text-xl font-bold">Synlighed</h2>
                 <p class="mt-4 leading-relaxed text-gray-600">
                     Med kontakten <strong class="text-gray-800">&ldquo;Mosefesten synlig for besøgende&rdquo;</strong> på Dashboard styrer du om tilmeldingssiden er offentligt tilgængelig. Når den er slået fra, kan kun indloggede administratorer se siden.
@@ -73,7 +73,7 @@ defineOptions({ layout: MainLayout });
             </div>
 
             <!-- Overblik og sletning -->
-            <div class="rounded-xl bg-white p-8 shadow-md">
+            <div class="rounded-xl bg-white p-6 shadow-md md:p-8">
                 <h2 class="text-xl font-bold">Overblik og sletning</h2>
                 <p class="mt-4 leading-relaxed text-gray-600">
                     På Dashboard kan du se alle vagter med en oversigt over hvem der har tilmeldt sig (navn og kontaktinfo). Du kan slette en hel vagtgruppe hvis den ikke længere er aktuel.
