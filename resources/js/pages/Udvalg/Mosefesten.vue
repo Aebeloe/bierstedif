@@ -6,7 +6,7 @@ import { computed, ref, onMounted, onBeforeUnmount } from 'vue';
 
 defineOptions({ layout: MainLayout });
 
-const page = usePage();
+const page = usePage<{ auth: { user: { id: number; name: string; email: string } | null } }>();
 const isLoggedIn = computed(() => !!page.props.auth?.user);
 const showTickets = computed(() => isLoggedIn.value || new Date() >= new Date('2026-03-17'));
 
